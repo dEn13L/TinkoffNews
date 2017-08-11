@@ -49,9 +49,8 @@ ext {
   constraintLayoutVersion = '1.0.2'
 
   // Database
-  requeryVersion = '1.3.2'
-  requerySqlVersion = '3.17.0'
-  sqlCipherVersion = '3.5.7'
+  requeryVersion = '1.4.0'
+  requerySqlVersion = '3.19.3'
 
   // DI
   daggerVersion = '2.11'
