@@ -1,3 +1,5 @@
 <resources>
 
+  <string name="tinkoff_news_api_url">https://api.tinkoff.ru</string>
+
 </resources>
