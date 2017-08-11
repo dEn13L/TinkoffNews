@@ -10,6 +10,12 @@ import javax.inject.Inject
 @ApplicationScope
 class NewsMapper @Inject constructor() {
 
+  fun map(newsList: List<ApiNews?>?): List<News> {
+    val news = mutableListOf<News?>()
+    newsList?.mapTo(news) { map(it) }
+    return news.filterNotNull()
+  }
+
   fun map(news: ApiNews?): News? {
     news?.let {
       val newsId = news.id?.toLong()

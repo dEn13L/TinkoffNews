@@ -13,7 +13,6 @@ class TinkoffNewsApplication : Application() {
   companion object {
 
     lateinit var appComponent: AppComponent
-
     fun get(context: Context): TinkoffNewsApplication {
       return context.applicationContext as TinkoffNewsApplication
     }

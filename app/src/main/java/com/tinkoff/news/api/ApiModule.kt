@@ -18,7 +18,8 @@ import javax.inject.Named
 
 const val URL = "URL"
 
-@Module class ApiModule {
+@Module
+class ApiModule {
 
   @Provides @Named(URL) @ApplicationScope fun provideApiUrl(context: Context): String {
     return context.getString(R.string.tinkoff_news_api_url)
@@ -43,7 +44,7 @@ const val URL = "URL"
         .build()
   }
 
-  @Provides @ApplicationScope fun provideApi(retrofit: Retrofit): ApiModule {
-    return retrofit.create<ApiModule>(ApiModule::class.java)
+  @Provides @ApplicationScope fun provideApi(retrofit: Retrofit): TinkoffNewsApi {
+    return retrofit.create<TinkoffNewsApi>(TinkoffNewsApi::class.java)
   }
 }

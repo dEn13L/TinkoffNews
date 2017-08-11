@@ -17,8 +17,7 @@ const val DB_VERSION = 1
 @Module
 class DbModule {
 
-  @Provides
-  @ApplicationScope
+  @Provides @ApplicationScope
   fun provideStore(context: Context): KotlinReactiveEntityStore<Persistable> {
     val source = DatabaseSource(context, Models.DEFAULT, DB_NAME, DB_VERSION)
     if (BuildConfig.DEBUG) {
