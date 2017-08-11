@@ -36,17 +36,6 @@ android {
       resValue "string", "${resAppName}", "${appName}${appNameSuffix}"
     }
   }
-  sourceSets {
-    main {
-      java.srcDirs += 'src/main/kotlin'
-    }
-    debug {
-      java.srcDirs += 'src/debug/kotlin'
-    }
-    release {
-      java.srcDirs += 'src/release/kotlin'
-    }
-  }
   dexOptions {
     javaMaxHeapSize "4g"
   }
@@ -91,7 +80,6 @@ dependencies {
   compile "io.requery:requery-kotlin:$requeryVersion"
   kapt "io.requery:requery-processor:$requeryVersion"
   compile "io.requery:sqlite-android:$requerySqlVersion"
-  compile "net.zetetic:android-database-sqlcipher:$sqlCipherVersion"
 
   // DI
   compile "com.google.dagger:dagger:$daggerVersion"
