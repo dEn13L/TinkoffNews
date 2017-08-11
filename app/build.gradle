@@ -1,34 +1,118 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+final appName = "Tinkoff News"
+final appPackage = "com.tinkoff.news"
+final resAppName = "app_name"
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
-    defaultConfig {
-        applicationId "news.tinkoff.com.tinkoffnews"
-        minSdkVersion 16
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  compileSdkVersion rootProject.ext.compileVersion
+  buildToolsVersion rootProject.ext.buildToolsVersion
+  defaultConfig {
+    applicationId appPackage
+    minSdkVersion rootProject.ext.minVersion
+    targetSdkVersion rootProject.ext.targetVersion
+    versionCode rootProject.ext.versionCode
+    versionName rootProject.ext.versionName
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+  buildTypes {
+    release {
+      shrinkResources true
+      minifyEnabled true
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+      resValue "string", "${resAppName}", "${appName}"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    debug {
+      def appPackageSuffix = ".debug"
+      def appNameSuffix = " DEBUG"
+
+      applicationIdSuffix appPackageSuffix
+      versionNameSuffix appNameSuffix
+
+      resValue "string", "${resAppName}", "${appName}${appNameSuffix}"
     }
+  }
+  sourceSets {
+    main {
+      java.srcDirs += 'src/main/kotlin'
+    }
+    debug {
+      java.srcDirs += 'src/debug/kotlin'
+    }
+    release {
+      java.srcDirs += 'src/release/kotlin'
+    }
+  }
+  dexOptions {
+    javaMaxHeapSize "4g"
+  }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.0'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+
+  // Testing
+  testCompile "junit:junit:$jUnitVersion"
+  androidTestCompile "com.android.support.test:runner:$testRunnerVersion"
+  androidTestCompile("com.android.support.test.espresso:espresso-core:$espressoVersion", {
+    exclude group: 'com.android.support', module: 'support-annotations'
+  })
+
+  // Debugging
+  debugCompile "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+  releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+  testCompile "com.squareup.leakcanary:leakcanary-android-no-op:$leakCanaryVersion"
+  debugCompile "com.facebook.stetho:stetho:$stethoVersion"
+
+  // Kotlin
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+  // Anko
+  compile "org.jetbrains.anko:anko-sdk15:$ankoVersion"
+  compile "org.jetbrains.anko:anko-sdk15-listeners:$ankoVersion"
+  compile "org.jetbrains.anko:anko-support-v4:$ankoVersion"
+  compile "org.jetbrains.anko:anko-appcompat-v7:$ankoVersion"
+  compile "org.jetbrains.anko:anko-appcompat-v7-listeners:$ankoVersion"
+  compile "org.jetbrains.anko:anko-recyclerview-v7:$ankoVersion"
+  compile "org.jetbrains.anko:anko-design:$ankoVersion"
+  compile "org.jetbrains.anko:anko-percent:$ankoVersion"
+
+  // Android support
+  compile "com.android.support:design:$supportVersion"
+  compile "com.android.support.constraint:constraint-layout:$constraintLayoutVersion"
+
+  // Database
+  compile "io.requery:requery:$requeryVersion"
+  compile "io.requery:requery-android:$requeryVersion"
+  compile "io.requery:requery-kotlin:$requeryVersion"
+  kapt "io.requery:requery-processor:$requeryVersion"
+  compile "io.requery:sqlite-android:$requerySqlVersion"
+  compile "net.zetetic:android-database-sqlcipher:$sqlCipherVersion"
+
+  // DI
+  compile "com.google.dagger:dagger:$daggerVersion"
+  kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+  provided "javax.annotation:jsr250-api:$javaxAnnotationVersion"
+
+  // Reactive
+  compile "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+  compile "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+
+  // Network
+  compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+  compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+  compile "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+  compile "com.squareup.okhttp3:logging-interceptor:$loggingInterceptorVersion"
+
+  // Architecture
+  compile "com.arello-mobile:moxy:$moxyVersion"
+  compile "com.arello-mobile:moxy-app-compat:$moxyVersion"
+  kapt "com.arello-mobile:moxy-compiler:$moxyVersion"
+
+  // Others
+  compile "com.jakewharton.timber:timber:$timberVersion"
 }

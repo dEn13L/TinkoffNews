@@ -1,1 +1,1 @@
-# TinkoffNews
+# Tinkoff News

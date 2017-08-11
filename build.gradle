@@ -1,27 +1,73 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-    ext.kotlin_version = '1.1.3-2'
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0-beta1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
+  ext.kotlinVersion = '1.1.3-2'
+  repositories {
+    google()
+    jcenter()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:3.0.0-beta1'
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+  }
 }
 
 allprojects {
-    repositories {
-        google()
-        jcenter()
-    }
+  repositories {
+    google()
+    jcenter()
+  }
 }
 
 task clean(type: Delete) {
-    delete rootProject.buildDir
+  delete rootProject.buildDir
+}
+
+ext {
+  // Android
+  compileVersion = 26
+  buildToolsVersion = '26.0.1'
+  minVersion = 16
+  targetVersion = 26
+  versionCode = 1
+  versionName = '0.1'
+
+  // Testing
+  jUnitVersion = '4.12'
+  mockitoVersion = '2.8.47'
+  testRunnerVersion = '1.0.0'
+  hamcrestVersion = '1.3'
+  espressoVersion = '3.0.0'
+
+  // Debugging
+  leakCanaryVersion = '1.5.1'
+  stethoVersion = '1.5.0'
+
+  // Kotlin
+  ankoVersion = '0.10.1'
+
+  // Android support
+  supportVersion = '26.0.1'
+  constraintLayoutVersion = '1.0.2'
+
+  // Database
+  requeryVersion = '1.3.2'
+  requerySqlVersion = '3.17.0'
+  sqlCipherVersion = '3.5.7'
+
+  // DI
+  daggerVersion = '2.11'
+  javaxAnnotationVersion = '1.0'
+
+  // Reactive
+  rxJavaVersion = '2.1.1'
+  rxAndroidVersion = '2.0.1'
+
+  // Network
+  retrofitVersion = '2.3.0'
+  loggingInterceptorVersion = '3.8.1'
+
+  // Architecture
+  moxyVersion = '1.5.3'
+
+  // Others
+  timberVersion = '4.5.1'
 }
