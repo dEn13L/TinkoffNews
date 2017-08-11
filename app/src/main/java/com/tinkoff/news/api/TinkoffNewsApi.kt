@@ -9,7 +9,6 @@ interface TinkoffNewsApi {
   @GET("/v1/news") fun getNews(): Single<ApiNewsResponse>
 
   @GET("/v1/news_content") fun getNewsDetail(
-      @Query("id") payload: String
-  ): Single<ApiNewsDetailResponse>
+      @Query("id") newsId: Long): Single<ApiNewsDetailResponse>
 
 }

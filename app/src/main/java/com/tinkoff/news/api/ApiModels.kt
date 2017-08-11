@@ -17,7 +17,7 @@ data class ApiNews(
 
 data class ApiNewsDetailResponse(
     @SerializedName("resultCode") val resultCode: String?,
-    @SerializedName("payload") val news: ApiNewsDetail?,
+    @SerializedName("payload") val newsDetail: ApiNewsDetail?,
     @SerializedName("trackingId") val trackingId: String
 )
 

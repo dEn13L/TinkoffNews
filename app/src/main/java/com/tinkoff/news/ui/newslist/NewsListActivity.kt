@@ -7,6 +7,7 @@ import com.tinkoff.news.R
 import com.tinkoff.news.data.News
 import com.tinkoff.news.ui.base.adapter.deletages.NewsDelegateAdapter
 import com.tinkoff.news.ui.base.view.BaseActivity
+import com.tinkoff.news.ui.newsdetail.NewsDetailActivity
 import com.tinkoff.news.utils.gone
 import com.tinkoff.news.utils.visible
 import kotlinx.android.synthetic.main.activity_news_list.*
@@ -19,6 +20,8 @@ class NewsListActivity : BaseActivity(), NewsListPresenter.View,
 
   @InjectPresenter lateinit var presenter: NewsListPresenter
   private val adapter = NewsListAdapter(this)
+  // Flag to prevent multiple news detail opening
+  private var newsClicked = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -26,6 +29,11 @@ class NewsListActivity : BaseActivity(), NewsListPresenter.View,
     initToolbar()
     initViews()
     presenter.loadNews(false)
+  }
+
+  override fun onResume() {
+    super.onResume()
+    newsClicked = false
   }
 
   /** MVP methods */
@@ -70,8 +78,11 @@ class NewsListActivity : BaseActivity(), NewsListPresenter.View,
 
   /** Adapter items methods */
 
-  override fun onNewsClicked() {
-    Timber.i("onNewsClicked")
+  override fun onNewsClicked(newsId: Long, title: String) {
+    if (!newsClicked) {
+      newsClicked = true
+      NewsDetailActivity.start(this, newsId, title)
+    }
   }
 
   /** Private methods */

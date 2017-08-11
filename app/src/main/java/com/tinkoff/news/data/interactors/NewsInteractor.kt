@@ -1,7 +1,7 @@
 package com.tinkoff.news.data.interactors
 
 import com.tinkoff.news.data.News
-import com.tinkoff.news.data.repository.news.NewsRepository
+import com.tinkoff.news.data.repository.NewsRepository
 import io.reactivex.Single
 
 class NewsInteractor constructor(

@@ -3,6 +3,7 @@
   <string name="tinkoff_news_api_url">https://api.tinkoff.ru</string>
   <string name="news_error">An error occurred while loading news.\nPlease, try later.</string>
   <string name="news_empty">No news</string>
-  <string name="news_date_format">MMM dd, HH:mm</string>
+  <string name="news_date_format">dd MMMM yyyy, HH:mm</string>
+  <string name="news_detail_error">An error occurred while loading news</string>
 
 </resources>

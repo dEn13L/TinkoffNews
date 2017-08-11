@@ -5,8 +5,11 @@ import com.arellomobile.mvp.MvpView
 import com.tinkoff.news.TinkoffNewsApplication
 import com.tinkoff.news.data.News
 import com.tinkoff.news.data.interactors.NewsInteractor
-import com.tinkoff.news.data.repository.news.NewsRepository
-import com.tinkoff.news.di.*
+import com.tinkoff.news.data.repository.NewsRepository
+import com.tinkoff.news.di.PresenterComponent
+import com.tinkoff.news.di.PresenterComponentBuilder
+import com.tinkoff.news.di.PresenterModule
+import com.tinkoff.news.di.PresenterScope
 import com.tinkoff.news.ui.base.presenter.BasePresenter
 import dagger.Module
 import dagger.Provides

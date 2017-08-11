@@ -14,7 +14,7 @@ class NewsDelegateAdapter(val listener: Listener) : ViewTypeDelegateAdapter {
 
   interface Listener {
 
-    fun onNewsClicked()
+    fun onNewsClicked(newsId: Long, title: String)
   }
 
   override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
@@ -33,7 +33,9 @@ class NewsDelegateAdapter(val listener: Listener) : ViewTypeDelegateAdapter {
       titleTextView.text = news.text
       dateTextView.text = DateFormatter.getNewsDate(context, news.publicationDate)
 
-      setOnClickListener { listener.onNewsClicked() }
+      setOnClickListener {
+        listener.onNewsClicked(news.newsId, news.text)
+      }
     }
   }
 }

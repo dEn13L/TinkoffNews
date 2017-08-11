@@ -31,3 +31,5 @@ fun View.isNotVisible() = visibility != View.VISIBLE
 fun View.isNotInvisible() = visibility != View.INVISIBLE
 
 fun View.isNotGone() = visibility != View.GONE
+
+fun Any.getSimpleName(): String = this::class.java.simpleName
