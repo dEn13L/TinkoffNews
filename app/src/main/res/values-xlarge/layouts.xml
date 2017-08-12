@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <item name="news_list_layout" type="layout">@layout/activity_news_list_twopanes</item>
-  <bool name="has_two_panes">true</bool>
-</resources>

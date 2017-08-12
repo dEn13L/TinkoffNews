@@ -15,7 +15,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textAppearance="@style/TextAppearance.App.Bold.Primary"
-      android:textSize="18sp"
+      android:textSize="@dimen/news_title_text_size"
       tools:text="Тинькофф Банк запускает Tinkoff Family: личный кабинет для держателей дополнительных карт"
       />
 
@@ -27,7 +27,7 @@
       android:layout_marginTop="8dp"
       android:gravity="bottom|start"
       android:textAppearance="@style/TextAppearance.App.Regular.Secondary"
-      android:textSize="14sp"
+      android:textSize="@dimen/news_date_text_size"
       tools:text="10 августа 2017 12:01:40"
       />
 
