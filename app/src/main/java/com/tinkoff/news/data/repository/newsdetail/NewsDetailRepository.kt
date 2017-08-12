@@ -7,6 +7,7 @@ import com.tinkoff.news.data.mapper.NewsDetailMapper
 import com.tinkoff.news.data.mapper.NewsMapper
 import com.tinkoff.news.db.DbNewsDetail
 import com.tinkoff.news.db.IDbNewsDetail
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.requery.Persistable
@@ -25,8 +26,9 @@ class NewsDetailRepository @Inject constructor(
     Timber.d("Get new detail (newsId: $newsId)")
     val local = getLocalNewsDetail(newsId)
     val cloud = getCloudNewsDetail(newsId)
-        .doOnSuccess(this::saveNewsDetail)
-        .flatMap { local }
+        .flatMap { newsDetail ->
+          saveNewsDetail(newsDetail).andThen(local)
+        }
 
     return Maybe.mergeArray(local, cloud)
   }
@@ -55,17 +57,13 @@ class NewsDetailRepository @Inject constructor(
         .doOnSuccess { Timber.d("Got cloud news detail $it") }
   }
 
-  fun saveNewsDetail(newsDetail: NewsDetail) {
+  fun saveNewsDetail(newsDetail: NewsDetail): Completable {
     val dbNewsDetail = newsDetailMapper.map(newsDetail)
     val dbNews = newsMapper.map(newsDetail.news, dbNewsDetail)
-    store
+    return store
         .upsert(dbNews)
         .toCompletable()
         .doOnSubscribe { Timber.d("Save news detail ($newsDetail) into DB") }
-        .subscribe({
-          Timber.d("News detail saved")
-        }, {
-          Timber.e(it, "Save news detail error")
-        })
+        .doOnComplete { Timber.d("News detail saved") }
   }
 }

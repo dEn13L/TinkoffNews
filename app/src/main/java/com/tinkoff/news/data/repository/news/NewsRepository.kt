@@ -6,6 +6,7 @@ import com.tinkoff.news.data.News
 import com.tinkoff.news.data.mapper.NewsMapper
 import com.tinkoff.news.db.DbNews
 import com.tinkoff.news.db.IDbNews
+import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.requery.Persistable
@@ -24,15 +25,23 @@ class NewsRepository @Inject constructor(
     val local = getLocalNews().filter { it.isNotEmpty() }
     val cloud = getCloudNews()
         .filter { it.isNotEmpty() }
-        .doOnSuccess(this::saveNews)
-        .flatMap { local }
+        .flatMap { news ->
+          saveNews(news).andThen(local)
+        }
 
     return Maybe.concatArray(local, cloud).firstOrError()
   }
 
   override fun refreshNews(): Single<List<News>> {
+    val local = getLocalNews()
     return getCloudNews()
-        .doOnSuccess(this::saveNews)
+        .flatMap { news ->
+          if (news.isNotEmpty()) {
+            saveNews(news).andThen(local)
+          } else {
+            Single.just(emptyList())
+          }
+        }
   }
 
   private fun getLocalNews(): Single<List<News>> {
@@ -60,16 +69,12 @@ class NewsRepository @Inject constructor(
         .doOnSuccess { Timber.d("Got cloud news $it") }
   }
 
-  fun saveNews(news: List<News>) {
+  fun saveNews(news: List<News>): Completable {
     val dbNews = news.map { newsMapper.map(it) }
-    store
+    return store
         .upsert(dbNews)
         .toCompletable()
         .doOnSubscribe { Timber.d("Save news ($news) into DB") }
-        .subscribe({
-          Timber.d("News saved")
-        }, {
-          Timber.e(it, "Save news error")
-        })
+        .doOnComplete { Timber.d("News saved") }
   }
 }
