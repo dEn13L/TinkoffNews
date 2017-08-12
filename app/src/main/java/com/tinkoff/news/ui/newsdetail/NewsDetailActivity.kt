@@ -86,7 +86,7 @@ class NewsDetailActivity : BaseActivity(), NewsDetailPresenter.View {
     setSupportActionBar(toolbar)
     supportActionBar?.let {
       it.setDisplayHomeAsUpEnabled(true)
-      it.setDisplayShowTitleEnabled(false)
+      it.setDisplayShowTitleEnabled(true)
     }
   }
 

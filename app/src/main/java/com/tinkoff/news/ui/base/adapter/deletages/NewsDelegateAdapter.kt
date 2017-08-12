@@ -1,6 +1,7 @@
 package com.tinkoff.news.ui.base.adapter.deletages
 
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.ViewGroup
 import com.tinkoff.news.R
 import com.tinkoff.news.data.News
@@ -30,7 +31,8 @@ class NewsDelegateAdapter(val listener: Listener) : ViewTypeDelegateAdapter {
       parent.inflate(R.layout.list_item_news)) {
 
     fun bind(news: News) = with(itemView) {
-      titleTextView.text = news.text
+      val htmlTitle = Html.fromHtml(news.text)
+      titleTextView.text = htmlTitle
       dateTextView.text = DateFormatter.getNewsDate(context, news.publicationDate)
 
       setOnClickListener {
