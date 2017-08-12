@@ -5,7 +5,6 @@ import com.arellomobile.mvp.MvpView
 import com.tinkoff.news.TinkoffNewsApplication
 import com.tinkoff.news.data.interactors.NewsDetailInteractor
 import com.tinkoff.news.data.repository.newsdetail.INewsDetailRepository
-import com.tinkoff.news.data.repository.newsdetail.NewsDetailRepository
 import com.tinkoff.news.di.PresenterComponent
 import com.tinkoff.news.di.PresenterComponentBuilder
 import com.tinkoff.news.di.PresenterModule
@@ -27,7 +26,11 @@ class NewsDetailPresenter(
 
     fun showLoading()
 
+    fun showContent()
+
     fun showError()
+
+    fun showSelectNews()
 
     fun showNewsDetail(title: String?, content: String?)
   }
@@ -66,22 +69,27 @@ class NewsDetailPresenter(
   }
 
   fun loadNewsDetail() {
-    val d = newsDetailInteractor.getNewsDetail(newsId)
-        .compose(setFlowableSchedulers())
-        .doOnSubscribe { viewState.showLoading() }
-        .subscribe({ (news, _, _, content) ->
-          Timber.i("News detail is loaded: $news, $content")
-          this.title = news.text
-          this.content = content
-          showNewsDetail()
-        }, {
-          Timber.e(it, "Load news detail error")
-          viewState.showError()
-        })
-    addDisposable(d)
+    if (newsId == 0L) {
+      viewState.showSelectNews()
+    } else {
+      val d = newsDetailInteractor.getNewsDetail(newsId)
+          .compose(setFlowableSchedulers())
+          .doOnSubscribe { viewState.showLoading() }
+          .subscribe({ (news, _, _, content) ->
+            Timber.i("News detail is loaded: $news, $content")
+            this.title = news.text
+            this.content = content
+            showNewsDetail()
+            viewState.showContent()
+          }, {
+            Timber.e(it, "Load news detail error")
+            viewState.showError()
+          })
+      addDisposable(d)
+    }
   }
 
-  fun showNewsDetail() {
+  private fun showNewsDetail() {
     viewState.showNewsDetail(title, content)
   }
 }

@@ -5,6 +5,7 @@
   <string name="news_empty">No news</string>
   <string name="news_date_format">dd MMMM yyyy, HH:mm</string>
   <string name="news_detail_error">An error occurred while loading news</string>
+  <string name="news_detail_select">Please select news</string>
 
   <string name="menu_refresh">Refresh</string>
 

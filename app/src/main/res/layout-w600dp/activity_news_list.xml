@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.newslist.NewsListActivity"
+    >
+
+  <include
+      layout="@layout/toolbar"
+      android:id="@+id/toolbar"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      />
+
+  <fragment
+      android:id="@+id/newsListFragment"
+      android:name="com.tinkoff.news.ui.newslist.NewsListFragment"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/dividerView"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/toolbar"
+      tools:layout="@layout/fragment_news_list"
+      />
+
+  <View
+      android:id="@+id/dividerView"
+      android:layout_width="1dp"
+      android:layout_height="0dp"
+      android:background="@color/very_light_grey"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toStartOf="@+id/guideline"
+      app:layout_constraintTop_toBottomOf="@+id/toolbar"
+      />
+
+  <android.support.constraint.Guideline
+      android:id="@+id/guideline"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:orientation="vertical"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintGuide_percent="0.4"
+      app:layout_constraintTop_toBottomOf="@+id/toolbar"
+      />
+
+  <FrameLayout
+      android:id="@+id/newsDetailFragment"
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/guideline"
+      app:layout_constraintTop_toBottomOf="@+id/toolbar"
+      />
+
+</android.support.constraint.ConstraintLayout>

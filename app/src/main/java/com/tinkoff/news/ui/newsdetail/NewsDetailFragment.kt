@@ -23,7 +23,7 @@ class NewsDetailFragment : BaseFragment(), NewsDetailPresenter.View {
     val EXTRA_NEWS_ID = getSimpleName() + "." + "newsId"
     val EXTRA_TITLE = getSimpleName() + "." + "title"
 
-    fun newInstance(newsId: Long, title: String): NewsDetailFragment {
+    fun newInstance(newsId: Long, title: String?): NewsDetailFragment {
       val fragment = NewsDetailFragment()
       val bundle = Bundle()
       bundle.putLong(EXTRA_NEWS_ID, newsId)
@@ -58,20 +58,34 @@ class NewsDetailFragment : BaseFragment(), NewsDetailPresenter.View {
   override fun showLoading() {
     loadingView.visible()
     messageTextView.gone()
+    contentTextView.gone()
   }
 
-  override fun showNewsDetail(title: String?, content: String?) {
+  override fun showContent() {
     loadingView.gone()
     messageTextView.gone()
-    titleTextView.text = title
-    val htmlContent = if (content != null) Html.fromHtml(content) else null
-    contentTextView.text = htmlContent
+    contentTextView.visible()
   }
 
   override fun showError() {
     loadingView.gone()
     messageTextView.visible()
+    contentTextView.gone()
     messageTextView.textResource = R.string.news_detail_error
+  }
+
+  override fun showSelectNews() {
+    loadingView.gone()
+    messageTextView.visible()
+    contentTextView.gone()
+    messageTextView.textResource = R.string.news_detail_select
+  }
+
+  override fun showNewsDetail(title: String?, content: String?) {
+    val htmlTitle = if (title != null) Html.fromHtml(title) else null
+    titleTextView.text = htmlTitle
+    val htmlContent = if (content != null) Html.fromHtml(content) else null
+    contentTextView.text = htmlContent
   }
 
   /** Private methods */

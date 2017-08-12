@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,20 +17,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingEnd="@dimen/horizontal_margin"
+        android:paddingStart="@dimen/horizontal_margin"
         >
 
       <TextView
           android:id="@+id/titleTextView"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginEnd="16dp"
-          android:layout_marginStart="16dp"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="@dimen/horizontal_margin"
           android:textAppearance="@style/TextAppearance.App.Bold.Primary"
           android:textSize="20sp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/toolbar"
           tools:text="Тинькофф Банк запускает Tinkoff Family: личный кабинет для держателей дополнительных карт"
           />
 
@@ -39,15 +35,10 @@
           android:id="@+id/contentTextView"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
-          android:layout_marginEnd="16dp"
-          android:layout_marginStart="16dp"
-          android:layout_marginTop="16dp"
+          android:layout_marginTop="@dimen/horizontal_margin"
           android:gravity="center_vertical"
           android:textAppearance="@style/TextAppearance.App.Regular.Primary"
           android:textSize="16sp"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/titleTextView"
           tools:text="Москва, Россия, 10 августа 2017г. \n\n\tТинькофф Банк запускает Tinkoff Family теперь держатели дополнительных карт могут пользоваться мобильным приложением и личным кабинетом, а также получать карты самостоятельно.\n\nСтанислав Близнюк, операционный директор, заместитель председателя правления Тинькофф Банка, прокомментировал: \'Наши клиенты активно пользуются не только основными картами, но и дополнительными, которые они оформляют для своих близких. Специально для таких клиентов мы создали личный кабинет, благодаря которому управлять семейным бюджетом станет еще удобнее. Держатели дополнительных карт смогут видеть все траты по своей карте и совершать платежи и переводы. Держатели основных карт смогут поручать платежи и оплату счетов держателям дополнительных карт. Клиенты, у которых есть и основная, и дополнительная карты, смогут собрать все карточные продукты в одном личном кабинете\'.\n\nРаньше держатели дополнительных карт могли оплачивать покупки по карте и снимать с нее деньги, при этом расходы отображались только в личном кабинете у держателя основной карты. Теперь у держателей дополнительных карт появился личный кабинет, где они смогут:\n\n\n\tКонтролировать расходы - проверять баланс и просматривать историю операций по дополнительной карте;\n\tПереводить деньги, оплачивать мобильную связь, интернет и услуги ЖКХ;\n\tПривязать к личному кабинету карту другого банка и оплачивать ею услуги.\n\n\nВ будущем Тинькофф Банк планирует расширять функционал личного кабинета для держателей дополнительных карт.\n\nЕсли у держателя дополнительной карты еще нет личного кабинета, ему нужно авторизоваться на сайте Tinkoff.ru или в мобильном приложении Тинькофф. Если у держателя основной карты есть личный кабинет, ему достаточно привязать к нему дополнительную карту.\n\nОставить заявку на дополнительную карту можно на сайте Tinkoff.ru, в мобильном приложении Тинькофф или обратившись в службу поддержки банка. Карта будет изготовлена и доставлена в течение двух дней.\n\nРаньше получить новую дополнительную карту мог только держатель основной карты. Теперь дополнительную карту можно доставить сразу ее держателю. Это удобно, когда клиент хочет выпустить карту для родственников, которые живут в другом городе. Чтобы выпустить дополнительную карту с доставкой держателю, нужно позвонить по бесплатному круглосуточному номеру 88003337773. В ближайшее время эта функция станет доступна в мобильном приложении Тинькофф и в личном кабинете на сайте Tinkoff.ru."
           />
 
