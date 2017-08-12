@@ -1,5 +1,6 @@
 package com.tinkoff.news.utils
 
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,3 +34,7 @@ fun View.isNotInvisible() = visibility != View.INVISIBLE
 fun View.isNotGone() = visibility != View.GONE
 
 fun Any.getSimpleName(): String = this::class.java.simpleName
+
+fun String?.fromHtml(): CharSequence {
+  return Html.fromHtml(this)
+}
