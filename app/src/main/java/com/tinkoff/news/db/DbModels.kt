@@ -1,9 +1,6 @@
 package com.tinkoff.news.db
 
-import io.requery.Entity
-import io.requery.Key
-import io.requery.Persistable
-import io.requery.Table
+import io.requery.*
 
 @Table(name = "news")
 @Entity
@@ -15,6 +12,10 @@ interface IDbNews : Persistable {
   val text: String
   val publicationDate: Long
   val bankInfoTypeId: Int
+
+  @get:ForeignKey
+  @get:OneToOne
+  var newsDetail: IDbNewsDetail?
 }
 
 @Table(name = "news_detail")
@@ -28,4 +29,7 @@ interface IDbNewsDetail : Persistable {
   val content: String
   val bankInfoTypeId: Int
   val typeId: String
+
+  @get:OneToOne(mappedBy = "newsDetail")
+  val news: IDbNews
 }

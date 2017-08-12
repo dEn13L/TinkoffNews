@@ -4,6 +4,7 @@ import com.tinkoff.news.api.ApiNews
 import com.tinkoff.news.data.News
 import com.tinkoff.news.db.DbNews
 import com.tinkoff.news.db.IDbNews
+import com.tinkoff.news.db.IDbNewsDetail
 import com.tinkoff.news.di.ApplicationScope
 import javax.inject.Inject
 
@@ -47,8 +48,9 @@ class NewsMapper @Inject constructor() {
     )
   }
 
-  fun map(news: News): IDbNews = with(news) {
+  fun map(news: News, newsDetail: IDbNewsDetail? = null): IDbNews = with(news) {
     val dbNews = DbNews()
+    dbNews.newsDetail = newsDetail
     dbNews.setNewsId(newsId)
     dbNews.setName(name)
     dbNews.setText(text)

@@ -44,7 +44,7 @@ class NewsDetailActivity : BaseActivity(), NewsDetailPresenter.View {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Timber.i("onCreate: $")
+    Timber.i("onCreate: $savedInstanceState")
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_news_detail)
     initToolbar()

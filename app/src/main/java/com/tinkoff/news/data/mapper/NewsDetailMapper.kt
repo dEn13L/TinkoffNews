@@ -1,7 +1,6 @@
 package com.tinkoff.news.data.mapper
 
 import com.tinkoff.news.api.ApiNewsDetail
-import com.tinkoff.news.data.News
 import com.tinkoff.news.data.NewsDetail
 import com.tinkoff.news.db.DbNewsDetail
 import com.tinkoff.news.db.IDbNewsDetail
@@ -45,7 +44,8 @@ class NewsDetailMapper @Inject constructor(val newsMapper: NewsMapper) {
     return null
   }
 
-  fun map(newsDetail: IDbNewsDetail, news: News): NewsDetail = with(newsDetail) {
+  fun map(newsDetail: IDbNewsDetail): NewsDetail = with(newsDetail) {
+    val news = newsMapper.map(newsDetail.news)
     NewsDetail(
         news,
         creationDate,
