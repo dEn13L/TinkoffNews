@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.tinkoff.news.R
 import com.tinkoff.news.data.News
-import com.tinkoff.news.ui.base.OnNewsSelectedListener
 import com.tinkoff.news.ui.base.OnRefreshListener
 import com.tinkoff.news.ui.base.adapter.deletages.NewsDelegateAdapter
 import com.tinkoff.news.ui.base.view.BaseFragment
@@ -16,6 +15,7 @@ import com.tinkoff.news.utils.gone
 import com.tinkoff.news.utils.visible
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import org.jetbrains.anko.textResource
+import timber.log.Timber
 
 
 class NewsListFragment : BaseFragment(), NewsListPresenter.View,
@@ -33,7 +33,9 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     initViews()
-    presenter.loadNews(false)
+    if (savedInstanceState == null) {
+      presenter.loadNews(false)
+    }
   }
 
   /** @see OnRefreshListener */
@@ -46,6 +48,7 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   /** MVP methods */
 
   override fun showLoading() {
+    Timber.i("showLoading")
     swipeRefreshLayout.isEnabled = false
     swipeRefreshLayout.isRefreshing = false
     loadingView.visible()
@@ -53,15 +56,8 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
     messageTextView.gone()
   }
 
-  override fun showContent() {
-    swipeRefreshLayout.isEnabled = true
-    swipeRefreshLayout.isRefreshing = false
-    loadingView.gone()
-    swipeRefreshLayout.visible()
-    messageTextView.gone()
-  }
-
   override fun showError() {
+    Timber.i("showError")
     swipeRefreshLayout.isEnabled = true
     swipeRefreshLayout.isRefreshing = false
     loadingView.gone()
@@ -71,6 +67,8 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   }
 
   override fun showEmpty() {
+    Timber.i("showEmpty")
+
     swipeRefreshLayout.isEnabled = true
     swipeRefreshLayout.isRefreshing = false
     loadingView.gone()
@@ -80,15 +78,26 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   }
 
   override fun showNews(news: List<News>) {
+    Timber.i("showNews")
     adapter.showItems(news)
+  }
+
+  override fun showContent() {
+    Timber.i("showContent")
+    swipeRefreshLayout.isEnabled = true
+    swipeRefreshLayout.isRefreshing = false
+    loadingView.gone()
+    swipeRefreshLayout.visible()
+    messageTextView.gone()
   }
 
   /** Adapter items methods */
 
-  override fun onNewsClicked(newsId: Long, title: String) {
+  override fun onNewsSelected(
+      newsId: Long, title: String?, position: Int) {
     activity?.let { activity ->
-      if (activity is OnNewsSelectedListener) {
-        activity.onNewsSelected(newsId, title)
+      if (activity is NewsDelegateAdapter.Listener) {
+        activity.onNewsSelected(newsId, title, position)
       }
     }
   }

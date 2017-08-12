@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @InjectViewState
 class NewsDetailPresenter(
-    private var newsId: Long,
+    private val newsId: Long,
     private var title: String?
 ) : BasePresenter<NewsDetailPresenter.View>() {
 
@@ -26,13 +26,13 @@ class NewsDetailPresenter(
 
     fun showLoading()
 
-    fun showContent()
-
     fun showError()
 
     fun showSelectNews()
 
     fun showNewsDetail(title: String?, content: String?)
+
+    fun showContent()
   }
 
   @PresenterScope
@@ -63,20 +63,17 @@ class NewsDetailPresenter(
         .injectMembers(this)
   }
 
-  override fun attachView(view: View?) {
-    super.attachView(view)
-    showNewsDetail()
-  }
-
   fun loadNewsDetail() {
+    Timber.i("Load news detail")
     if (newsId == 0L) {
       viewState.showSelectNews()
     } else {
+      showNewsDetail()
       val d = newsDetailInteractor.getNewsDetail(newsId)
           .compose(setFlowableSchedulers())
           .doOnSubscribe { viewState.showLoading() }
           .subscribe({ (news, _, _, content) ->
-            Timber.i("News detail is loaded: $news, $content")
+            //            Timber.i("News detail is loaded: $news, $content")
             this.title = news.text
             this.content = content
             showNewsDetail()

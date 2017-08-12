@@ -1,4 +1,4 @@
-package com.tinkoff.news.ui.newslist
+package com.tinkoff.news.ui.newsdetail
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpView
@@ -18,24 +18,20 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @InjectViewState
-class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
+class NewsDetailsPresenter(
+    val startingPosition: Int
+) : BasePresenter<NewsDetailsPresenter.View>() {
 
   interface View : MvpView {
 
-    fun showLoading()
-
     fun showError()
 
-    fun showEmpty()
-
-    fun showNews(news: List<News>)
-
-    fun showContent()
+    fun showNews(news: List<News>, startingPosition: Int)
   }
 
   @PresenterScope
   @Subcomponent(modules = arrayOf(Component.InnerModule::class))
-  interface Component : PresenterComponent<NewsListPresenter> {
+  interface Component : PresenterComponent<NewsDetailsPresenter> {
 
     @Subcomponent.Builder
     interface Builder : PresenterComponentBuilder<InnerModule, Component>
@@ -55,46 +51,18 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
 
   init {
     TinkoffNewsApplication.appComponent
-        .newsListPresenterBuilder()
+        .newsDetailsPresenterBuilder()
         .build()
         .injectMembers(this)
   }
 
-  fun loadNews(pullToRefresh: Boolean) {
-    if (pullToRefresh) {
-      refreshNews()
-    } else {
-      loadNews()
-    }
-  }
-
-  private fun refreshNews() {
-    newsInteractor.refreshNews()
-        .compose(setMaybeSchedulersAndDisposable())
-        .subscribe({ news ->
-          //          Timber.i("News are refreshed: $news")
-          viewState.showNews(news)
-        }, {
-          Timber.e(it, "Refresh news error")
-          viewState.showContent()
-        }, {
-          viewState.showContent()
-        })
-  }
-
-  private fun loadNews() {
+  fun loadNews() {
     Timber.i("Load news")
     newsInteractor.getNews()
         .compose(setSingleSchedulersAndDisposable())
-        .doOnSubscribe { viewState.showLoading() }
         .subscribe({ news ->
           //          Timber.i("News are loaded: $news")
-          if (news.isNotEmpty()) {
-            viewState.showNews(news)
-            viewState.showContent()
-          } else {
-            viewState.showEmpty()
-          }
+          viewState.showNews(news, startingPosition)
         }, {
           Timber.e(it, "Load news error")
           viewState.showError()

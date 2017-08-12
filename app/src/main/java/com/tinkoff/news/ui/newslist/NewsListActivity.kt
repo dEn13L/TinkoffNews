@@ -5,17 +5,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import com.tinkoff.news.R
-import com.tinkoff.news.ui.base.OnNewsSelectedListener
 import com.tinkoff.news.ui.base.OnRefreshListener
+import com.tinkoff.news.ui.base.adapter.deletages.NewsDelegateAdapter
 import com.tinkoff.news.ui.base.view.BaseActivity
-import com.tinkoff.news.ui.newsdetail.NewsDetailActivity
 import com.tinkoff.news.ui.newsdetail.NewsDetailFragment
+import com.tinkoff.news.ui.newsdetail.NewsDetailsActivity
 import kotlinx.android.synthetic.main.toolbar.*
+import timber.log.Timber
 
 const val SELECTED_NEWS_ID = "newsId"
 const val SELECTED_NEWS_TITLE = "newsTitle"
 
-class NewsListActivity : BaseActivity(), OnNewsSelectedListener {
+class NewsListActivity : BaseActivity(), NewsDelegateAdapter.Listener {
 
   private var isTwoPanes = false
   private var currentNewsId = 0L
@@ -45,14 +46,17 @@ class NewsListActivity : BaseActivity(), OnNewsSelectedListener {
     else -> super.onOptionsItemSelected(item)
   }
 
-  /** @see OnNewsSelectedListener */
+  /** @see NewsDelegateAdapter.Listener */
 
-  override fun onNewsSelected(newsId: Long, title: String?) {
+  override fun onNewsSelected(newsId: Long, title: String?, position: Int) {
+    Timber.i("onNewsSelected newsId: $newsId, title: $title, position: $position")
+
     currentNewsId = newsId
+    currentNewsTitle = title
     if (isTwoPanes) {
       showNewsDetailFragment(newsId, title)
     } else {
-      NewsDetailActivity.start(this, newsId, title)
+      NewsDetailsActivity.start(this, position)
     }
   }
 
@@ -80,7 +84,7 @@ class NewsListActivity : BaseActivity(), OnNewsSelectedListener {
     currentNewsId = savedInstanceState?.getLong(SELECTED_NEWS_ID) ?: 0L
     currentNewsTitle = savedInstanceState?.getString(SELECTED_NEWS_TITLE)
     if (isTwoPanes) {
-      onNewsSelected(currentNewsId, currentNewsTitle)
+      onNewsSelected(currentNewsId, currentNewsTitle, 0)
     }
   }
 
