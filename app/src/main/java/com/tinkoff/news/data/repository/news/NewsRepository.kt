@@ -1,4 +1,4 @@
-package com.tinkoff.news.data.repository
+package com.tinkoff.news.data.repository.news
 
 import com.tinkoff.news.api.TinkoffNewsApi
 import com.tinkoff.news.data.ApiException
@@ -6,7 +6,6 @@ import com.tinkoff.news.data.News
 import com.tinkoff.news.data.mapper.NewsMapper
 import com.tinkoff.news.db.DbNews
 import com.tinkoff.news.db.IDbNews
-import com.tinkoff.news.di.ApplicationScope
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.requery.Persistable
@@ -14,14 +13,13 @@ import io.requery.reactivex.KotlinReactiveEntityStore
 import timber.log.Timber
 import javax.inject.Inject
 
-@ApplicationScope
 class NewsRepository @Inject constructor(
     private val api: TinkoffNewsApi,
     private val store: KotlinReactiveEntityStore<Persistable>,
     private val newsMapper: NewsMapper
-) {
+) : INewsRepository {
 
-  fun getNews(): Single<List<News>> {
+  override fun getNews(): Single<List<News>> {
     Timber.d("Get news")
     val local = getLocalNews().filter { it.isNotEmpty() }
     val cloud = getCloudNews()
@@ -32,7 +30,7 @@ class NewsRepository @Inject constructor(
     return Maybe.concatArray(local, cloud).firstOrError()
   }
 
-  fun refreshNews(): Single<List<News>> {
+  override fun refreshNews(): Single<List<News>> {
     return getCloudNews()
         .doOnSuccess(this::saveNews)
   }

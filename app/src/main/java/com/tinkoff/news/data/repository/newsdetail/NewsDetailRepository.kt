@@ -1,4 +1,4 @@
-package com.tinkoff.news.data.repository
+package com.tinkoff.news.data.repository.newsdetail
 
 import com.tinkoff.news.api.TinkoffNewsApi
 import com.tinkoff.news.data.ApiException
@@ -7,7 +7,6 @@ import com.tinkoff.news.data.mapper.NewsDetailMapper
 import com.tinkoff.news.data.mapper.NewsMapper
 import com.tinkoff.news.db.DbNewsDetail
 import com.tinkoff.news.db.IDbNewsDetail
-import com.tinkoff.news.di.ApplicationScope
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.requery.Persistable
@@ -15,15 +14,14 @@ import io.requery.reactivex.KotlinReactiveEntityStore
 import timber.log.Timber
 import javax.inject.Inject
 
-@ApplicationScope
 class NewsDetailRepository @Inject constructor(
     private val api: TinkoffNewsApi,
     private val store: KotlinReactiveEntityStore<Persistable>,
     private val newsMapper: NewsMapper,
     private val newsDetailMapper: NewsDetailMapper
-) {
+) : INewsDetailRepository {
 
-  fun getNewsDetail(newsId: Long): Flowable<NewsDetail> {
+  override fun getNewsDetail(newsId: Long): Flowable<NewsDetail> {
     Timber.d("Get new detail (newsId: $newsId)")
     val local = getLocalNewsDetail(newsId)
     val cloud = getCloudNewsDetail(newsId)

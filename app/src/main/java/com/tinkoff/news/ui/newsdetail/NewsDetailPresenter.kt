@@ -4,7 +4,8 @@ import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpView
 import com.tinkoff.news.TinkoffNewsApplication
 import com.tinkoff.news.data.interactors.NewsDetailInteractor
-import com.tinkoff.news.data.repository.NewsDetailRepository
+import com.tinkoff.news.data.repository.newsdetail.INewsDetailRepository
+import com.tinkoff.news.data.repository.newsdetail.NewsDetailRepository
 import com.tinkoff.news.di.PresenterComponent
 import com.tinkoff.news.di.PresenterComponentBuilder
 import com.tinkoff.news.di.PresenterModule
@@ -42,7 +43,7 @@ class NewsDetailPresenter(
     class InnerModule : PresenterModule {
 
       @Provides @PresenterScope fun provideNewsDetailInteractor(
-          newsDetailRepository: NewsDetailRepository
+          newsDetailRepository: INewsDetailRepository
       ): NewsDetailInteractor {
         return NewsDetailInteractor(newsDetailRepository)
       }
