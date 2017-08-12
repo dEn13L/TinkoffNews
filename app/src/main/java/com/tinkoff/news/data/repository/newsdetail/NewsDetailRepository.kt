@@ -23,7 +23,6 @@ class NewsDetailRepository @Inject constructor(
 ) : INewsDetailRepository {
 
   override fun getNewsDetail(newsId: Long): Flowable<NewsDetail> {
-    Timber.d("Get new detail (newsId: $newsId)")
     val local = getLocalNewsDetail(newsId)
     val cloud = getCloudNewsDetail(newsId)
         .flatMap { newsDetail ->
@@ -41,7 +40,7 @@ class NewsDetailRepository @Inject constructor(
         .maybe()
         .map { newsDetailMapper.map(it) }
         .doOnSubscribe { Timber.d("Get db news detail (newsId: $newsId)") }
-        .doOnSuccess { Timber.d("Got db news detail $it") }
+        .doOnSuccess { Timber.d("Got db news detail") }
   }
 
   private fun getCloudNewsDetail(newsId: Long): Maybe<NewsDetail> {
@@ -54,7 +53,7 @@ class NewsDetailRepository @Inject constructor(
           }
         }
         .doOnSubscribe { Timber.d("Get cloud news detail (newsId: $newsId)") }
-        .doOnSuccess { Timber.d("Got cloud news detail $it") }
+        .doOnSuccess { Timber.d("Got cloud news detail") }
   }
 
   fun saveNewsDetail(newsDetail: NewsDetail): Completable {

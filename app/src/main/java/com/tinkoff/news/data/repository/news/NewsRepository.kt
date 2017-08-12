@@ -21,7 +21,6 @@ class NewsRepository @Inject constructor(
 ) : INewsRepository {
 
   override fun getNews(): Single<List<News>> {
-    Timber.d("Get news")
     val local = getLocalNews().filter { it.isNotEmpty() }
     val cloud = getCloudNews()
         .filter { it.isNotEmpty() }
@@ -53,7 +52,7 @@ class NewsRepository @Inject constructor(
         .map { newsMapper.map(it) }
         .toList()
         .doOnSubscribe { Timber.d("Get db news") }
-        .doOnSuccess { Timber.d("Got db news $it") }
+        .doOnSuccess { Timber.d("Got db news") }
   }
 
   private fun getCloudNews(): Single<List<News>> {
@@ -66,7 +65,7 @@ class NewsRepository @Inject constructor(
           }
         }
         .doOnSubscribe { Timber.d("Get cloud news") }
-        .doOnSuccess { Timber.d("Got cloud news $it") }
+        .doOnSuccess { Timber.d("Got cloud news") }
   }
 
   fun saveNews(news: List<News>): Completable {

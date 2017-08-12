@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import com.tinkoff.news.R
 import com.tinkoff.news.ui.base.view.BaseActivity
+import com.tinkoff.news.ui.newslist.NewsListActivity
 import com.tinkoff.news.utils.getSimpleName
 import kotlinx.android.synthetic.main.toolbar.*
 import org.jetbrains.anko.intentFor
-import timber.log.Timber
 
 class NewsDetailActivity : BaseActivity() {
 
@@ -17,7 +17,7 @@ class NewsDetailActivity : BaseActivity() {
     val EXTRA_NEWS_ID = getSimpleName() + "." + "newsId"
     val EXTRA_TITLE = getSimpleName() + "." + "title"
 
-    fun start(context: Context, newsId: Long, title: String) {
+    fun start(context: Context, newsId: Long, title: String?) {
       val intent = context.intentFor<NewsDetailActivity>(
           EXTRA_NEWS_ID to newsId,
           EXTRA_TITLE to title
@@ -27,8 +27,11 @@ class NewsDetailActivity : BaseActivity() {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Timber.i("onCreate: $savedInstanceState")
     super.onCreate(savedInstanceState)
+    if (resources.getBoolean(R.bool.has_two_panes)) {
+      finish()
+      return
+    }
     setContentView(R.layout.activity_news_detail)
     initToolbar()
     if (savedInstanceState == null) {
@@ -36,13 +39,15 @@ class NewsDetailActivity : BaseActivity() {
       val title = intent.getStringExtra(EXTRA_TITLE)
       val fragment = NewsDetailFragment.newInstance(newsId, title)
       val transaction = supportFragmentManager.beginTransaction()
-      transaction.replace(R.id.newsDetailFragment, fragment)
+      transaction.add(R.id.newsDetailFragment, fragment)
       transaction.commit()
     }
   }
 
   override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-    android.R.id.home -> consume { finish() }
+    android.R.id.home -> consume {
+      navigateUpTo(intentFor<NewsListActivity>())
+    }
     else -> super.onOptionsItemSelected(item)
   }
 

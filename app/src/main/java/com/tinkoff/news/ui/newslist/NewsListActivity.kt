@@ -12,19 +12,27 @@ import com.tinkoff.news.ui.newsdetail.NewsDetailActivity
 import com.tinkoff.news.ui.newsdetail.NewsDetailFragment
 import kotlinx.android.synthetic.main.toolbar.*
 
+const val SELECTED_NEWS_ID = "newsId"
+const val SELECTED_NEWS_TITLE = "newsTitle"
+
 class NewsListActivity : BaseActivity(), OnNewsSelectedListener {
 
-  private var isDualPane = false
+  private var isTwoPanes = false
+  private var currentNewsId = 0L
+  private var currentNewsTitle: String? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_news_list)
+    setContentView(R.layout.news_list_layout)
     initToolbar()
-    isDualPane = determinePaneLayout()
-    if (isDualPane) {
-      // Show empty new detail fragment
-      showNewsDetailFragment(0L, null)
-    }
+    isTwoPanes = isTwoPanesLayout()
+    restoreSelectedNews(savedInstanceState)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle?) {
+    outState?.putLong(SELECTED_NEWS_ID, currentNewsId)
+    outState?.putString(SELECTED_NEWS_TITLE, currentNewsTitle)
+    super.onSaveInstanceState(outState)
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -39,13 +47,13 @@ class NewsListActivity : BaseActivity(), OnNewsSelectedListener {
 
   /** @see OnNewsSelectedListener */
 
-  override fun onNewsSelected(newsId: Long, title: String) {
-    if (isDualPane) {
+  override fun onNewsSelected(newsId: Long, title: String?) {
+    currentNewsId = newsId
+    if (isTwoPanes) {
       showNewsDetailFragment(newsId, title)
     } else {
       NewsDetailActivity.start(this, newsId, title)
     }
-
   }
 
   /** Private methods */
@@ -58,14 +66,22 @@ class NewsListActivity : BaseActivity(), OnNewsSelectedListener {
     }
   }
 
+  private fun isTwoPanesLayout(): Boolean {
+    return findViewById<ViewGroup>(R.id.newsDetailFragment) != null
+  }
+
   private fun refresh() {
     supportFragmentManager.fragments.filterIsInstance<OnRefreshListener>().forEach {
       it.onRefresh()
     }
   }
 
-  private fun determinePaneLayout(): Boolean {
-    return findViewById<ViewGroup>(R.id.newsDetailFragment) != null
+  private fun restoreSelectedNews(savedInstanceState: Bundle?) {
+    currentNewsId = savedInstanceState?.getLong(SELECTED_NEWS_ID) ?: 0L
+    currentNewsTitle = savedInstanceState?.getString(SELECTED_NEWS_TITLE)
+    if (isTwoPanes) {
+      onNewsSelected(currentNewsId, currentNewsTitle)
+    }
   }
 
   private fun showNewsDetailFragment(newsId: Long, title: String?) {
