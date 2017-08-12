@@ -31,15 +31,12 @@ class NewsRepository @Inject constructor(
     return Maybe.concatArray(local, cloud).firstOrError()
   }
 
-  override fun refreshNews(): Single<List<News>> {
-    val local = getLocalNews()
+  override fun refreshNews(): Maybe<List<News>> {
+    val local = getLocalNews().filter { it.isNotEmpty() }
     return getCloudNews()
+        .filter { it.isNotEmpty() }
         .flatMap { news ->
-          if (news.isNotEmpty()) {
-            saveNews(news).andThen(local)
-          } else {
-            Single.just(emptyList())
-          }
+          saveNews(news).andThen(local)
         }
   }
 
