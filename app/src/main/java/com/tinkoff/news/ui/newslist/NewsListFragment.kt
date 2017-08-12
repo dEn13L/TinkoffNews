@@ -15,7 +15,6 @@ import com.tinkoff.news.utils.gone
 import com.tinkoff.news.utils.visible
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import org.jetbrains.anko.textResource
-import timber.log.Timber
 
 class NewsListFragment : BaseFragment(), NewsListPresenter.View,
     NewsDelegateAdapter.Listener {
@@ -39,6 +38,11 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   override fun onResume() {
     super.onResume()
     newsClicked = false
+  }
+
+  fun refreshNews() {
+    swipeRefreshLayout.isRefreshing = true
+    presenter.loadNews(true)
   }
 
   /** MVP methods */
@@ -94,8 +98,7 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
 
   private fun initViews() {
     swipeRefreshLayout.setOnRefreshListener {
-      Timber.i("OnRefresh")
-      presenter.loadNews(true)
+      refreshNews()
     }
 
     newsRecyclerView.setHasFixedSize(true)

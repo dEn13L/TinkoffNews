@@ -5,7 +5,8 @@ import android.view.Menu
 import android.view.MenuItem
 import com.tinkoff.news.R
 import com.tinkoff.news.ui.base.view.BaseActivity
-import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.android.synthetic.main.activity_news_list.*
+import kotlinx.android.synthetic.main.toolbar.toolbar
 
 class NewsListActivity : BaseActivity() {
 
@@ -36,6 +37,6 @@ class NewsListActivity : BaseActivity() {
   }
 
   private fun refresh() {
-
+    (newsListFragment as NewsListFragment).refreshNews()
   }
 }
