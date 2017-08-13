@@ -10,6 +10,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.tinkoff.news.R
 import com.tinkoff.news.data.News
 import com.tinkoff.news.ui.base.view.BaseActivity
+import com.tinkoff.news.utils.ZoomOutPageTransformer
 import com.tinkoff.news.utils.getSimpleName
 import com.tinkoff.news.utils.gone
 import com.tinkoff.news.utils.visible
@@ -17,7 +18,6 @@ import kotlinx.android.synthetic.main.activity_news_detail.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.textResource
-import timber.log.Timber
 
 class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
 
@@ -63,19 +63,18 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
   /** MVP methods */
 
   override fun showError() {
-    Timber.i("showError")
     viewPager.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_detail_error
   }
 
   override fun showNews(news: List<News>, startingPosition: Int) {
-    Timber.i("showNews. startingPosition: $startingPosition")
     messageTextView.gone()
     viewPager.visible()
     val pagerAdapter = NewsDetailPagerAdapter(supportFragmentManager, news)
     viewPager.adapter = pagerAdapter
     viewPager.currentItem = startingPosition
+    viewPager.setPageTransformer(true, ZoomOutPageTransformer())
   }
 
   /** Private methods */
