@@ -1,11 +1,13 @@
 package com.tinkoff.news.data.repository.news
 
+import com.google.gson.Gson
+import com.tinkoff.news.api.ApiNewsResponse
 import com.tinkoff.news.api.TinkoffNewsApi
-import com.tinkoff.news.data.ApiException
 import com.tinkoff.news.data.News
 import com.tinkoff.news.data.mapper.NewsMapper
 import com.tinkoff.news.db.DbNews
 import com.tinkoff.news.db.IDbNews
+import com.tinkoff.news.utils.RxUtils
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.reactivex.Single
@@ -17,7 +19,8 @@ import javax.inject.Inject
 class NewsRepository @Inject constructor(
     private val api: TinkoffNewsApi,
     private val store: KotlinReactiveEntityStore<Persistable>,
-    private val newsMapper: NewsMapper
+    private val newsMapper: NewsMapper,
+    private val gson: Gson
 ) : INewsRepository {
 
   override fun getNews(): Single<List<News>> {
@@ -49,20 +52,16 @@ class NewsRepository @Inject constructor(
         .map { newsMapper.map(it) }
         .toList()
         .doOnSubscribe { Timber.d("Get db news") }
-        .doOnSuccess { Timber.d("Got db news") }
+        .doOnSuccess { Timber.d("Got db news $it") }
   }
 
   private fun getCloudNews(): Single<List<News>> {
     return api.getNews()
-        .map { (resultCode, news) ->
-          if (resultCode == null || resultCode != "OK") {
-            throw ApiException(resultCode)
-          } else {
-            newsMapper.map(news)
-          }
-        }
+        .map { gson.fromJson(it, ApiNewsResponse::class.java) }
+        .compose<ApiNewsResponse>(RxUtils.checkResultCode())
+        .map { (_, news) -> newsMapper.map(news) }
         .doOnSubscribe { Timber.d("Get cloud news") }
-        .doOnSuccess { Timber.d("Got cloud news") }
+        .doOnSuccess { Timber.d("Got cloud news $it") }
   }
 
   fun saveNews(news: List<News>): Completable {

@@ -2,10 +2,14 @@ package com.tinkoff.news.api
 
 import com.google.gson.annotations.SerializedName
 
-data class ApiNewsResponse(
-    @SerializedName("resultCode") val resultCode: String?,
-    @SerializedName("payload") val news: List<ApiNews>?
+abstract class ApiResponse(
+    open val resultCode: String?
 )
+
+data class ApiNewsResponse(
+    override val resultCode: String?,
+    val news: List<ApiNews>
+) : ApiResponse(resultCode)
 
 data class ApiNews(
     @SerializedName("id") val id: String?,
@@ -16,10 +20,10 @@ data class ApiNews(
 )
 
 data class ApiNewsDetailResponse(
-    @SerializedName("resultCode") val resultCode: String?,
-    @SerializedName("payload") val newsDetail: ApiNewsDetail?,
-    @SerializedName("trackingId") val trackingId: String
-)
+    override val resultCode: String?,
+    val newsDetail: ApiNewsDetail?,
+    val trackingId: String?
+) : ApiResponse(resultCode)
 
 data class ApiNewsDetail(
     @SerializedName("title") val news: ApiNews?,

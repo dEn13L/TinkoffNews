@@ -3,7 +3,6 @@ package com.tinkoff.news.di.application
 import android.app.Application
 import android.content.Context
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.tinkoff.news.api.TinkoffNewsApi
 import com.tinkoff.news.data.mapper.NewsDetailMapper
 import com.tinkoff.news.data.mapper.NewsMapper
@@ -23,24 +22,21 @@ import io.requery.reactivex.KotlinReactiveEntityStore
     return application.applicationContext
   }
 
-  @Provides @ApplicationScope fun provideGson(): Gson {
-    return GsonBuilder().create()
-  }
-
   @Provides @ApplicationScope fun provideNewsRepository(
       api: TinkoffNewsApi,
       store: KotlinReactiveEntityStore<Persistable>,
-      newsMapper: NewsMapper
+      newsMapper: NewsMapper,
+      gson: Gson
   ): INewsRepository {
-    return NewsRepository(api, store, newsMapper)
+    return NewsRepository(api, store, newsMapper, gson)
   }
 
   @Provides @ApplicationScope fun provideNewsDetailRepository(
       api: TinkoffNewsApi,
       store: KotlinReactiveEntityStore<Persistable>,
-      newsMapper: NewsMapper,
-      newsDetailMapper: NewsDetailMapper
+      newsDetailMapper: NewsDetailMapper,
+      gson: Gson
   ): INewsDetailRepository {
-    return NewsDetailRepository(api, store, newsMapper, newsDetailMapper)
+    return NewsDetailRepository(api, store, newsDetailMapper, gson)
   }
 }

@@ -1,8 +1,12 @@
 package com.tinkoff.news.api
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.tinkoff.news.BuildConfig
 import com.tinkoff.news.R
+import com.tinkoff.news.api.deserializers.ApiNewsDetailResponseDeserializer
+import com.tinkoff.news.api.deserializers.ApiNewsResponseDeserializer
 import com.tinkoff.news.di.ApplicationScope
 import dagger.Module
 import dagger.Provides
@@ -46,5 +50,12 @@ class ApiModule {
 
   @Provides @ApplicationScope fun provideApi(retrofit: Retrofit): TinkoffNewsApi {
     return retrofit.create<TinkoffNewsApi>(TinkoffNewsApi::class.java)
+  }
+
+  @Provides @ApplicationScope fun provideGson(): Gson {
+    return GsonBuilder()
+        .registerTypeAdapter(ApiNewsResponse::class.java, ApiNewsResponseDeserializer())
+        .registerTypeAdapter(ApiNewsDetailResponse::class.java, ApiNewsDetailResponseDeserializer())
+        .create()
   }
 }
