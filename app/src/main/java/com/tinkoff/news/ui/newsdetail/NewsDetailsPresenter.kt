@@ -2,6 +2,8 @@ package com.tinkoff.news.ui.newsdetail
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpView
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.tinkoff.news.TinkoffNewsApplication
 import com.tinkoff.news.data.News
 import com.tinkoff.news.data.interactors.NewsInteractor
@@ -26,9 +28,12 @@ class NewsDetailsPresenter(
 
     fun showError()
 
+    @StateStrategyType(AddToEndSingleStrategy::class)
     fun showNews(news: List<News>, startingPosition: Int)
 
     fun showNews(newsId: Long, title: String, position: Int)
+
+    fun showContent()
   }
 
   @PresenterScope
@@ -69,9 +74,8 @@ class NewsDetailsPresenter(
   }
 
   fun loadNews() {
-    Timber.i("Load news")
-    newsInteractor.getNews()
-        .compose(setSingleSchedulersAndDisposable())
+    val d = newsInteractor.getNews()
+        .compose(setFlowableSchedulers())
         .subscribe({ news ->
           this.news = news
           pageChanged(startingPosition)
@@ -79,7 +83,10 @@ class NewsDetailsPresenter(
         }, {
           Timber.e(it, "Load news error")
           viewState.showError()
+        }, {
+          viewState.showContent()
         })
+    addDisposable(d)
   }
 
   fun pageChanged(position: Int) {

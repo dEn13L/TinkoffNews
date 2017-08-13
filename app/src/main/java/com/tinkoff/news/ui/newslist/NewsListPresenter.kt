@@ -2,6 +2,8 @@ package com.tinkoff.news.ui.newslist
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpView
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import com.tinkoff.news.TinkoffNewsApplication
 import com.tinkoff.news.data.News
 import com.tinkoff.news.data.interactors.NewsInteractor
@@ -28,6 +30,7 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
 
     fun showEmpty()
 
+    @StateStrategyType(AddToEndSingleStrategy::class)
     fun showNews(news: List<News>)
 
     fun showContent()
@@ -52,6 +55,8 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
   }
 
   @Inject lateinit var newsInteractor: NewsInteractor
+  private var news: List<News>? = null
+  private var loadingState = false
 
   init {
     TinkoffNewsApplication.appComponent
@@ -69,33 +74,59 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
   }
 
   private fun refreshNews() {
-    newsInteractor.refreshNews()
-        .compose(setMaybeSchedulersAndDisposable())
-        .subscribe({ news ->
-          viewState.showNews(news)
-          viewState.showContent()
-        }, {
-          Timber.e(it, "Refresh news error")
-          viewState.showContent()
-        }, {
-          viewState.showContent()
-        })
+    if (!loadingState) {
+      val d = newsInteractor.refreshNews()
+          .compose(setMaybeSchedulers())
+          .doOnSubscribe {
+            loadingState = true
+            viewState.showLoading()
+          }
+          .doFinally {
+            loadingState = false
+            viewState.showContent()
+          }
+          .subscribe({ news ->
+            this.news = news
+            viewState.showNews(news)
+          }, {
+            Timber.e(it, "Refresh news error")
+          })
+      addDisposable(d)
+    }
   }
 
   private fun loadNews() {
-    newsInteractor.getNews()
-        .compose(setSingleSchedulersAndDisposable())
-        .doOnSubscribe { viewState.showLoading() }
-        .subscribe({ news ->
-          if (news.isNotEmpty()) {
-            viewState.showNews(news)
-            viewState.showContent()
-          } else {
-            viewState.showEmpty()
+    if (!loadingState) {
+      val d = newsInteractor.getNews()
+          .compose(setFlowableSchedulers())
+          .doOnSubscribe {
+            loadingState = true
+            viewState.showLoading()
           }
-        }, {
-          Timber.e(it, "Load news error")
-          viewState.showError()
-        })
+          .doFinally {
+            loadingState = false
+          }
+          .doOnCancel {
+            if (news?.isNotEmpty() ?: false) {
+              viewState.showContent()
+            } else {
+              viewState.showEmpty()
+            }
+          }
+          .subscribe({ news ->
+            this.news = news
+            viewState.showNews(news)
+          }, {
+            Timber.e(it, "Load news error")
+            viewState.showError()
+          }, {
+            if (news?.isNotEmpty() ?: false) {
+              viewState.showContent()
+            } else {
+              viewState.showEmpty()
+            }
+          })
+      addDisposable(d)
+    }
   }
 }

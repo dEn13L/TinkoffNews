@@ -68,8 +68,6 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
   }
 
   override fun showNews(news: List<News>, startingPosition: Int) {
-    messageTextView.gone()
-    viewPager.visible()
     val pagerAdapter = NewsDetailPagerAdapter(supportFragmentManager, news)
     viewPager.adapter = pagerAdapter
     viewPager.currentItem = startingPosition
@@ -84,6 +82,11 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
   override fun showNews(newsId: Long, title: String, position: Int) {
     NewsListActivity.start(this, newsId, title, position)
     finish()
+  }
+
+  override fun showContent() {
+    messageTextView.gone()
+    viewPager.visible()
   }
 
   /** Private methods */

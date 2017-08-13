@@ -21,7 +21,7 @@ import org.jetbrains.anko.textResource
 class NewsListFragment : BaseFragment(), NewsListPresenter.View,
     NewsDelegateAdapter.Listener,
     OnRefreshListener,
-    OnToolbarClickListener{
+    OnToolbarClickListener {
 
   @InjectPresenter lateinit var presenter: NewsListPresenter
   private val adapter = NewsListAdapter(this)
@@ -42,7 +42,6 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   /** @see OnRefreshListener */
 
   override fun onRefresh() {
-    swipeRefreshLayout.isRefreshing = true
     presenter.loadNews(true)
   }
 
@@ -55,26 +54,19 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   /** MVP methods */
 
   override fun showLoading() {
-    swipeRefreshLayout.isEnabled = false
-    swipeRefreshLayout.isRefreshing = false
-    loadingView.visible()
-    swipeRefreshLayout.gone()
+    swipeRefreshLayout.isRefreshing = true
     messageTextView.gone()
   }
 
   override fun showError() {
-    swipeRefreshLayout.isEnabled = true
     swipeRefreshLayout.isRefreshing = false
-    loadingView.gone()
     swipeRefreshLayout.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_error
   }
 
   override fun showEmpty() {
-    swipeRefreshLayout.isEnabled = true
     swipeRefreshLayout.isRefreshing = false
-    loadingView.gone()
     swipeRefreshLayout.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_empty
@@ -85,9 +77,7 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   }
 
   override fun showContent() {
-    swipeRefreshLayout.isEnabled = true
     swipeRefreshLayout.isRefreshing = false
-    loadingView.gone()
     swipeRefreshLayout.visible()
     messageTextView.gone()
   }
