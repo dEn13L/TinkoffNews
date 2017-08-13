@@ -27,6 +27,8 @@ class NewsDetailsPresenter(
     fun showError()
 
     fun showNews(news: List<News>, startingPosition: Int)
+
+    fun showNews(newsId: Long, title: String, position: Int)
   }
 
   @PresenterScope
@@ -48,12 +50,22 @@ class NewsDetailsPresenter(
   }
 
   @Inject lateinit var newsInteractor: NewsInteractor
+  private var currentPosition = 0
+  private var news: List<News>? = null
+  private var currentNews: News? = null
 
   init {
+    currentPosition = startingPosition
     TinkoffNewsApplication.appComponent
         .newsDetailsPresenterBuilder()
         .build()
         .injectMembers(this)
+  }
+
+  fun enterTwoPaneMode() {
+    currentNews?.let {
+      viewState.showNews(it.newsId, it.text, currentPosition)
+    }
   }
 
   fun loadNews() {
@@ -61,11 +73,17 @@ class NewsDetailsPresenter(
     newsInteractor.getNews()
         .compose(setSingleSchedulersAndDisposable())
         .subscribe({ news ->
-          //          Timber.i("News are loaded: $news")
+          this.news = news
+          pageChanged(startingPosition)
           viewState.showNews(news, startingPosition)
         }, {
           Timber.e(it, "Load news error")
           viewState.showError()
         })
+  }
+
+  fun pageChanged(position: Int) {
+    currentPosition = position
+    currentNews = news?.get(position)
   }
 }

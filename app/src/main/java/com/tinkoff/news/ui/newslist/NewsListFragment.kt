@@ -86,8 +86,7 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
 
   /** Adapter items methods */
 
-  override fun onNewsSelected(
-      newsId: Long, title: String?, position: Int) {
+  override fun onNewsSelected(newsId: Long, title: String?, position: Int) {
     activity?.let { activity ->
       if (activity is NewsDelegateAdapter.Listener) {
         activity.onNewsSelected(newsId, title, position)

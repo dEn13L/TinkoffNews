@@ -2,14 +2,13 @@ package com.tinkoff.news.ui.newsdetail
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.NavUtils
-import android.support.v4.app.TaskStackBuilder
 import android.view.MenuItem
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.tinkoff.news.R
 import com.tinkoff.news.data.News
 import com.tinkoff.news.ui.base.view.BaseActivity
+import com.tinkoff.news.ui.newslist.NewsListActivity
 import com.tinkoff.news.utils.ZoomOutPageTransformer
 import com.tinkoff.news.utils.getSimpleName
 import com.tinkoff.news.utils.gone
@@ -17,6 +16,7 @@ import com.tinkoff.news.utils.visible
 import kotlinx.android.synthetic.main.activity_news_detail.*
 import kotlinx.android.synthetic.main.toolbar.toolbar
 import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.support.v4.onPageChangeListener
 import org.jetbrains.anko.textResource
 
 class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
@@ -45,8 +45,7 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     if (resources.getBoolean(R.bool.has_two_panes)) {
-      finish()
-      return
+      presenter.enterTwoPaneMode()
     }
     setContentView(R.layout.activity_news_detail)
     initToolbar()
@@ -75,6 +74,16 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
     viewPager.adapter = pagerAdapter
     viewPager.currentItem = startingPosition
     viewPager.setPageTransformer(true, ZoomOutPageTransformer())
+    viewPager.onPageChangeListener {
+      onPageSelected { position ->
+        presenter.pageChanged(position)
+      }
+    }
+  }
+
+  override fun showNews(newsId: Long, title: String, position: Int) {
+    NewsListActivity.start(this, newsId, title, position)
+    finish()
   }
 
   /** Private methods */
@@ -84,17 +93,6 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
     supportActionBar?.let {
       it.setDisplayHomeAsUpEnabled(true)
       it.setDisplayShowTitleEnabled(true)
-    }
-  }
-
-  private fun navigateToUp() {
-    val upIntent = NavUtils.getParentActivityIntent(this)
-    if (NavUtils.shouldUpRecreateTask(this, upIntent) || isTaskRoot) {
-      TaskStackBuilder.create(this)
-          .addNextIntentWithParentStack(upIntent)
-          .startActivities()
-    } else {
-      NavUtils.navigateUpTo(this, upIntent)
     }
   }
 }

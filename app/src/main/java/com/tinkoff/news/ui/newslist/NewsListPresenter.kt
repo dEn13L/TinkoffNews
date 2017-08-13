@@ -72,12 +72,13 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
     newsInteractor.refreshNews()
         .compose(setMaybeSchedulersAndDisposable())
         .subscribe({ news ->
-          //          Timber.i("News are refreshed: $news")
+          Timber.i("refreshNews next")
           viewState.showNews(news)
         }, {
           Timber.e(it, "Refresh news error")
           viewState.showContent()
         }, {
+          Timber.i("refreshNews compete")
           viewState.showContent()
         })
   }
@@ -88,7 +89,6 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
         .compose(setSingleSchedulersAndDisposable())
         .doOnSubscribe { viewState.showLoading() }
         .subscribe({ news ->
-          //          Timber.i("News are loaded: $news")
           if (news.isNotEmpty()) {
             viewState.showNews(news)
             viewState.showContent()

@@ -27,7 +27,7 @@ class NewsDetailRepository @Inject constructor(
     val local = getLocalNewsDetail(newsId)
     val cloud = getCloudNewsDetail(newsId)
         .flatMap { newsDetail ->
-          saveNewsDetail(newsDetail).andThen(local)
+          saveNewsDetail(newsDetail).andThen(Maybe.just(newsDetail))
         }
 
     return Maybe.mergeArray(local, cloud)

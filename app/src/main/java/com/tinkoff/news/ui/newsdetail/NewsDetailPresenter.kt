@@ -64,7 +64,6 @@ class NewsDetailPresenter(
   }
 
   fun loadNewsDetail() {
-    Timber.i("Load news detail")
     if (newsId == 0L) {
       viewState.showSelectNews()
     } else {
@@ -73,7 +72,6 @@ class NewsDetailPresenter(
           .compose(setFlowableSchedulers())
           .doOnSubscribe { viewState.showLoading() }
           .subscribe({ (news, _, _, content) ->
-            //            Timber.i("News detail is loaded: $news, $content")
             this.title = news.text
             this.content = content
             showNewsDetail()
