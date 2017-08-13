@@ -60,14 +60,14 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
 
   override fun showError() {
     swipeRefreshLayout.isRefreshing = false
-    swipeRefreshLayout.gone()
+    newsRecyclerView.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_error
   }
 
   override fun showEmpty() {
     swipeRefreshLayout.isRefreshing = false
-    swipeRefreshLayout.gone()
+    newsRecyclerView.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_empty
   }
@@ -78,7 +78,7 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
 
   override fun showContent() {
     swipeRefreshLayout.isRefreshing = false
-    swipeRefreshLayout.visible()
+    newsRecyclerView.visible()
     messageTextView.gone()
   }
 
@@ -100,6 +100,7 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
       onRefresh()
     }
 
+    newsRecyclerView.gone()
     newsRecyclerView.setHasFixedSize(true)
     newsRecyclerView.adapter = adapter
     newsRecyclerView.layoutManager = LinearLayoutManager(context)

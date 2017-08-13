@@ -11,13 +11,13 @@
       android:id="@+id/swipeRefreshLayout"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:background="@color/very_light_grey"
       >
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/newsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/very_light_grey"
         android:scrollbars="vertical"
         tools:listitem="@layout/list_item_news"
         />
