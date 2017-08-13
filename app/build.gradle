@@ -62,13 +62,7 @@ dependencies {
 
   // Anko
   compile "org.jetbrains.anko:anko-sdk15:$ankoVersion"
-  compile "org.jetbrains.anko:anko-sdk15-listeners:$ankoVersion"
   compile "org.jetbrains.anko:anko-support-v4:$ankoVersion"
-  compile "org.jetbrains.anko:anko-appcompat-v7:$ankoVersion"
-  compile "org.jetbrains.anko:anko-appcompat-v7-listeners:$ankoVersion"
-  compile "org.jetbrains.anko:anko-recyclerview-v7:$ankoVersion"
-  compile "org.jetbrains.anko:anko-design:$ankoVersion"
-  compile "org.jetbrains.anko:anko-percent:$ankoVersion"
 
   // Android support
   compile "com.android.support:design:$supportVersion"
