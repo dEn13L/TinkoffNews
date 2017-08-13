@@ -57,13 +57,14 @@ class NewsDetailMapper @Inject constructor(val newsMapper: NewsMapper) {
   }
 
   fun map(newsDetail: NewsDetail): IDbNewsDetail = with(newsDetail) {
+    val dbNews = newsMapper.map(news)
     val dbNewsDetail = DbNewsDetail()
-    dbNewsDetail.setNewsId(news.newsId)
     dbNewsDetail.setCreationDate(creationDate)
     dbNewsDetail.setLastModificationDate(lastModificationDate)
     dbNewsDetail.setContent(content)
     dbNewsDetail.setBankInfoTypeId(bankInfoTypeId)
     dbNewsDetail.setTypeId(typeId)
+    dbNewsDetail.news = dbNews
     dbNewsDetail
   }
 }

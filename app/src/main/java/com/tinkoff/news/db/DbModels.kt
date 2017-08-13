@@ -13,8 +13,7 @@ interface IDbNews : Persistable {
   val publicationDate: Long
   val bankInfoTypeId: Int
 
-  @get:ForeignKey
-  @get:OneToOne
+  @get:OneToOne(mappedBy = "news")
   var newsDetail: IDbNewsDetail?
 }
 
@@ -22,14 +21,15 @@ interface IDbNews : Persistable {
 @Entity
 interface IDbNewsDetail : Persistable {
 
-  @get:Key
-  val newsId: Long
+  @get:Key @get:Generated
+  val id: Long
   val creationDate: Long
   val lastModificationDate: Long
   val content: String
   val bankInfoTypeId: Int
   val typeId: String
 
-  @get:OneToOne(mappedBy = "newsDetail")
-  val news: IDbNews
+  @get:ForeignKey
+  @get:OneToOne(cascade = arrayOf(CascadeAction.NONE))
+  var news: IDbNews
 }

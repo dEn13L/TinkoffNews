@@ -15,7 +15,6 @@ import com.tinkoff.news.utils.gone
 import com.tinkoff.news.utils.visible
 import kotlinx.android.synthetic.main.fragment_news_list.*
 import org.jetbrains.anko.textResource
-import timber.log.Timber
 
 
 class NewsListFragment : BaseFragment(), NewsListPresenter.View,
@@ -48,7 +47,6 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   /** MVP methods */
 
   override fun showLoading() {
-    Timber.i("showLoading")
     swipeRefreshLayout.isEnabled = false
     swipeRefreshLayout.isRefreshing = false
     loadingView.visible()
@@ -57,7 +55,6 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   }
 
   override fun showError() {
-    Timber.i("showError")
     swipeRefreshLayout.isEnabled = true
     swipeRefreshLayout.isRefreshing = false
     loadingView.gone()
@@ -67,8 +64,6 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   }
 
   override fun showEmpty() {
-    Timber.i("showEmpty")
-
     swipeRefreshLayout.isEnabled = true
     swipeRefreshLayout.isRefreshing = false
     loadingView.gone()
@@ -78,12 +73,10 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   }
 
   override fun showNews(news: List<News>) {
-    Timber.i("showNews")
     adapter.showItems(news)
   }
 
   override fun showContent() {
-    Timber.i("showContent")
     swipeRefreshLayout.isEnabled = true
     swipeRefreshLayout.isRefreshing = false
     loadingView.gone()

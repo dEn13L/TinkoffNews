@@ -48,9 +48,8 @@ class NewsMapper @Inject constructor() {
     )
   }
 
-  fun map(news: News, newsDetail: IDbNewsDetail? = null): IDbNews = with(news) {
+  fun map(news: News): IDbNews = with(news) {
     val dbNews = DbNews()
-    dbNews.newsDetail = newsDetail
     dbNews.setNewsId(newsId)
     dbNews.setName(name)
     dbNews.setText(text)

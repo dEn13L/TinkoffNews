@@ -14,7 +14,6 @@ import com.tinkoff.news.utils.gone
 import com.tinkoff.news.utils.visible
 import kotlinx.android.synthetic.main.fragment_news_detail.*
 import org.jetbrains.anko.textResource
-import timber.log.Timber
 
 class NewsDetailFragment : BaseFragment(), NewsDetailPresenter.View {
 
@@ -57,16 +56,12 @@ class NewsDetailFragment : BaseFragment(), NewsDetailPresenter.View {
   /** MVP methods */
 
   override fun showLoading() {
-    Timber.i("showLoading")
-
     loadingView.visible()
     messageTextView.gone()
     contentTextView.gone()
   }
 
   override fun showError() {
-    Timber.i("showError")
-
     loadingView.gone()
     messageTextView.visible()
     contentTextView.gone()
@@ -74,8 +69,6 @@ class NewsDetailFragment : BaseFragment(), NewsDetailPresenter.View {
   }
 
   override fun showSelectNews() {
-    Timber.i("showSelectNews")
-
     loadingView.gone()
     messageTextView.visible()
     contentTextView.gone()
@@ -83,15 +76,11 @@ class NewsDetailFragment : BaseFragment(), NewsDetailPresenter.View {
   }
 
   override fun showNewsDetail(title: String?, content: String?) {
-    Timber.i("showNewsDetail title: $title, content: $content")
-
     titleTextView.text = title?.fromHtml()
     contentTextView.text = content?.fromHtml()
   }
 
   override fun showContent() {
-    Timber.i("showContent")
-
     loadingView.gone()
     messageTextView.gone()
     contentTextView.visible()
