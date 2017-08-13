@@ -57,7 +57,7 @@ ext {
   javaxAnnotationVersion = '1.0'
 
   // Reactive
-  rxJavaVersion = '2.1.1'
+  rxJavaVersion = '2.1.2'
   rxAndroidVersion = '2.0.1'
 
   // Network
