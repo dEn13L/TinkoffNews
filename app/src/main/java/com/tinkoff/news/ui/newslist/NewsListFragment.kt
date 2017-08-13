@@ -1,6 +1,8 @@
 package com.tinkoff.news.ui.newslist
 
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -60,26 +62,22 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
 
   override fun showError() {
     swipeRefreshLayout.isRefreshing = false
-    newsRecyclerView.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_error
   }
 
   override fun showEmpty() {
     swipeRefreshLayout.isRefreshing = false
-    newsRecyclerView.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_empty
   }
 
   override fun showNews(news: List<News>) {
-    newsRecyclerView.visible()
     adapter.showItems(news)
   }
 
   override fun showContent() {
     swipeRefreshLayout.isRefreshing = false
-    newsRecyclerView.visible()
     messageTextView.gone()
   }
 
@@ -101,7 +99,10 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
       onRefresh()
     }
 
-    newsRecyclerView.gone()
+    val decoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+    val divider = ContextCompat.getDrawable(context, R.drawable.divider)
+    decoration.setDrawable(divider)
+    newsRecyclerView.addItemDecoration(decoration)
     newsRecyclerView.setHasFixedSize(true)
     newsRecyclerView.adapter = adapter
     newsRecyclerView.layoutManager = LinearLayoutManager(context)
