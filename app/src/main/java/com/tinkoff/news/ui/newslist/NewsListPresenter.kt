@@ -72,19 +72,17 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
     newsInteractor.refreshNews()
         .compose(setMaybeSchedulersAndDisposable())
         .subscribe({ news ->
-          Timber.i("refreshNews next")
           viewState.showNews(news)
+          viewState.showContent()
         }, {
           Timber.e(it, "Refresh news error")
           viewState.showContent()
         }, {
-          Timber.i("refreshNews compete")
           viewState.showContent()
         })
   }
 
   private fun loadNews() {
-    Timber.i("Load news")
     newsInteractor.getNews()
         .compose(setSingleSchedulersAndDisposable())
         .doOnSubscribe { viewState.showLoading() }
