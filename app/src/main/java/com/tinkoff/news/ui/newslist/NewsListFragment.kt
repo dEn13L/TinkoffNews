@@ -9,6 +9,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.tinkoff.news.R
 import com.tinkoff.news.data.News
 import com.tinkoff.news.ui.base.OnRefreshListener
+import com.tinkoff.news.ui.base.OnToolbarClickListener
 import com.tinkoff.news.ui.base.adapter.deletages.NewsDelegateAdapter
 import com.tinkoff.news.ui.base.view.BaseFragment
 import com.tinkoff.news.utils.gone
@@ -19,7 +20,8 @@ import org.jetbrains.anko.textResource
 
 class NewsListFragment : BaseFragment(), NewsListPresenter.View,
     NewsDelegateAdapter.Listener,
-    OnRefreshListener {
+    OnRefreshListener,
+    OnToolbarClickListener{
 
   @InjectPresenter lateinit var presenter: NewsListPresenter
   private val adapter = NewsListAdapter(this)
@@ -42,6 +44,12 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   override fun onRefresh() {
     swipeRefreshLayout.isRefreshing = true
     presenter.loadNews(true)
+  }
+
+  /** @see OnToolbarClickListener */
+
+  override fun onToolbarClicked() {
+    newsRecyclerView.scrollToPosition(0)
   }
 
   /** MVP methods */

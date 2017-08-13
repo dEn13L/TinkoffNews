@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import com.tinkoff.news.R
 import com.tinkoff.news.ui.base.OnRefreshListener
+import com.tinkoff.news.ui.base.OnToolbarClickListener
 import com.tinkoff.news.ui.base.adapter.deletages.NewsDelegateAdapter
 import com.tinkoff.news.ui.base.view.BaseActivity
 import com.tinkoff.news.ui.newsdetail.NewsDetailFragment
@@ -40,7 +41,6 @@ class NewsListActivity : BaseActivity(), NewsDelegateAdapter.Listener {
   private var currentPosition = 0
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    Timber.i("onCreate")
     super.onCreate(savedInstanceState)
     setContentView(R.layout.news_list_layout)
     initToolbar()
@@ -49,14 +49,12 @@ class NewsListActivity : BaseActivity(), NewsDelegateAdapter.Listener {
   }
 
   override fun onNewIntent(intent: Intent?) {
-    Timber.i("onNewIntent")
     super.onNewIntent(intent)
     val bundle = intent?.extras
     restoreSelectedNews(bundle)
   }
 
   override fun onSaveInstanceState(outState: Bundle?) {
-    Timber.i("onSaveInstanceState")
     saveInstanceState(outState)
     super.onSaveInstanceState(outState)
   }
@@ -93,6 +91,11 @@ class NewsListActivity : BaseActivity(), NewsDelegateAdapter.Listener {
       it.setDisplayHomeAsUpEnabled(false)
       it.setDisplayShowTitleEnabled(true)
     }
+    toolbar.setOnClickListener {
+      supportFragmentManager.fragments?.filterIsInstance<OnToolbarClickListener>()?.forEach {
+        it.onToolbarClicked()
+      }
+    }
   }
 
   private fun isTwoPanesLayout(): Boolean {
@@ -115,7 +118,6 @@ class NewsListActivity : BaseActivity(), NewsDelegateAdapter.Listener {
     currentNewsId = savedInstanceState?.getLong(SELECTED_NEWS_ID) ?: 0L
     currentNewsTitle = savedInstanceState?.getString(SELECTED_NEWS_TITLE)
     currentPosition = savedInstanceState?.getInt(SELECTED_NEWS_POSITION) ?: 0
-    Timber.i("restoreSelectedNews, $currentNewsId, $currentNewsTitle, $currentPosition")
     if (isTwoPanes) {
       onNewsSelected(currentNewsId, currentNewsTitle, currentPosition)
     }
