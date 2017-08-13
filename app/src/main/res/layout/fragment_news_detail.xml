@@ -36,7 +36,6 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_marginTop="@dimen/horizontal_margin"
-          android:autoLink="all"
           android:gravity="center_vertical"
           android:textAppearance="@style/TextAppearance.App.Regular.Primary"
           android:textSize="@dimen/news_detail_content_text_size"

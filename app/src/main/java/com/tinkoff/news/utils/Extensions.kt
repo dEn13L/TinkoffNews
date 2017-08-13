@@ -36,5 +36,10 @@ fun View.isNotGone() = visibility != View.GONE
 fun Any.getSimpleName(): String = this::class.java.simpleName
 
 fun String?.fromHtml(): CharSequence {
-  return Html.fromHtml(this)
+  if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+    return Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)
+  } else {
+    return Html.fromHtml(this)
+  }
+
 }

@@ -74,7 +74,6 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
 
   override fun showNews(news: List<News>) {
     adapter.showItems(news)
-    newsRecyclerView.scrollToPosition(0)
   }
 
   override fun showContent() {

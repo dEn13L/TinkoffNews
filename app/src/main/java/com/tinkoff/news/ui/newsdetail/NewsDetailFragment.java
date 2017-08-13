@@ -2,6 +2,7 @@ package com.tinkoff.news.ui.newsdetail;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,6 +88,7 @@ public class NewsDetailFragment extends BaseFragment implements NewsDetailPresen
     CharSequence htmlContent = content != null ? ExtensionsKt.fromHtml(content) : null;
     titleTextView.setText(htmlTitle);
     contentTextView.setText(htmlContent);
+    contentTextView.setMovementMethod(LinkMovementMethod.getInstance());
   }
 
   @Override public void showContent() {
