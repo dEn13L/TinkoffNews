@@ -22,7 +22,7 @@ class NewsDetailPagerAdapter extends FragmentStatePagerAdapter {
     News currentNews = news.get(position);
     long newsId = currentNews.getNewsId();
     String title = currentNews.getText();
-    return NewsDetailFragment.Companion.newInstance(newsId, title);
+    return NewsDetailFragment.newInstance(newsId, title);
   }
 
   @Override public Object instantiateItem(ViewGroup container, int position) {

@@ -73,6 +73,7 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
   }
 
   override fun showNews(news: List<News>) {
+    newsRecyclerView.visible()
     adapter.showItems(news)
   }
 
