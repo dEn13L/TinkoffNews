@@ -22,6 +22,7 @@ import javax.inject.Inject
 @InjectViewState
 class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
 
+  @StateStrategyType(AddToEndSingleStrategy::class)
   interface View : MvpView {
 
     fun showLoading()
@@ -30,7 +31,6 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
 
     fun showEmpty()
 
-    @StateStrategyType(AddToEndSingleStrategy::class)
     fun showNews(news: List<News>)
 
     fun showContent()
@@ -76,6 +76,7 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
   private fun refreshNews() {
     if (!loadingState) {
       val d = newsInteractor.refreshNews()
+          .filter { it.isNotEmpty() }
           .compose(setMaybeSchedulers())
           .doOnSubscribe {
             loadingState = true
@@ -86,8 +87,7 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
             viewState.showContent()
           }
           .subscribe({ news ->
-            this.news = news
-            viewState.showNews(news)
+            showNews(news)
           }, {
             Timber.e(it, "Refresh news error")
           })
@@ -103,30 +103,30 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
             loadingState = true
             viewState.showLoading()
           }
-          .doFinally {
-            loadingState = false
-          }
-          .doOnCancel {
-            if (news?.isNotEmpty() ?: false) {
-              viewState.showContent()
-            } else {
-              viewState.showEmpty()
-            }
-          }
+          .doFinally { loadingState = false }
+          .doOnCancel { showResult() }
           .subscribe({ news ->
-            this.news = news
-            viewState.showNews(news)
+            showNews(news)
           }, {
             Timber.e(it, "Load news error")
             viewState.showError()
           }, {
-            if (news?.isNotEmpty() ?: false) {
-              viewState.showContent()
-            } else {
-              viewState.showEmpty()
-            }
+            showResult()
           })
       addDisposable(d)
+    }
+  }
+
+  private fun showNews(news: List<News>) {
+    this.news = news
+    viewState.showNews(news)
+  }
+
+  private fun showResult() {
+    if (news?.isNotEmpty() ?: false) {
+      viewState.showContent()
+    } else {
+      viewState.showEmpty()
     }
   }
 }

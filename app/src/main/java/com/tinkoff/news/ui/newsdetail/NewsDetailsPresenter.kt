@@ -24,11 +24,11 @@ class NewsDetailsPresenter(
     val startingPosition: Int
 ) : BasePresenter<NewsDetailsPresenter.View>() {
 
+  @StateStrategyType(AddToEndSingleStrategy::class)
   interface View : MvpView {
 
     fun showError()
 
-    @StateStrategyType(AddToEndSingleStrategy::class)
     fun showNews(news: List<News>, startingPosition: Int)
 
     fun showNews(newsId: Long, title: String, position: Int)

@@ -2,6 +2,8 @@ package com.tinkoff.news.ui.newsdetail;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import com.tinkoff.news.TinkoffNewsApplication;
 import com.tinkoff.news.data.NewsDetail;
 import com.tinkoff.news.data.interactors.NewsDetailInteractor;
@@ -15,6 +17,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.Subcomponent;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import org.reactivestreams.Subscription;
 import timber.log.Timber;
@@ -23,6 +26,7 @@ import javax.inject.Inject;
 @InjectViewState
 public class NewsDetailPresenter extends BasePresenter<NewsDetailPresenter.View> {
 
+  @StateStrategyType(AddToEndSingleStrategy.class)
   interface View extends MvpView {
 
     void showLoading();
@@ -89,6 +93,10 @@ public class NewsDetailPresenter extends BasePresenter<NewsDetailPresenter.View>
             @Override public void accept(Throwable throwable) throws Exception {
               Timber.e(throwable, "Load news detail error");
               getViewState().showError();
+            }
+          }, new Action() {
+            @Override public void run() throws Exception {
+              getViewState().showContent();
             }
           });
       addDisposable(d);
