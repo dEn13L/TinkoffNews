@@ -16,7 +16,9 @@ import com.tinkoff.news.ui.base.presenter.BasePresenter
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
+import io.reactivex.subjects.PublishSubject
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @InjectViewState
@@ -55,15 +57,32 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
   }
 
   @Inject lateinit var newsInteractor: NewsInteractor
-  private var news: List<News>? = null
   private var loadingState = false
   private var query: String? = null
+  private var querySubject = PublishSubject.create<String>()
 
   init {
     TinkoffNewsApplication.appComponent
         .newsListPresenterBuilder()
         .build()
         .injectMembers(this)
+  }
+
+  override fun attachView(view: View?) {
+    super.attachView(view)
+    querySubject
+        .doOnSubscribe { addDisposable(it) }
+        .debounce(100, TimeUnit.MILLISECONDS)
+        .subscribe({ query ->
+          newsInteractor.queryNews(query)
+              .doOnSubscribe { addDisposable(it) }
+              .compose(setSingleSchedulers())
+              .subscribe({ news ->
+                showNews(news)
+              }, {
+                Timber.e(it, "Filter news error")
+              })
+        })
   }
 
   fun loadNews(pullToRefresh: Boolean) {
@@ -75,9 +94,9 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
   }
 
   fun filter(query: String?) {
-    Timber.i("filter $query")
     this.query = query
-    showNews(news)
+    val safeQuery = query ?: ""
+    querySubject.onNext(safeQuery)
   }
 
   private fun refreshNews() {
@@ -124,19 +143,16 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
     }
   }
 
-  private fun showNews(news: List<News>?) {
-    this.news = news
-    news?.let {
-      val filteredNews = if (query.isNullOrBlank()) {
-        news
-      } else {
-        news.filter { it.text.contains(query as CharSequence, true) }
-      }
-      if (filteredNews.isEmpty()) {
-        viewState.showEmpty()
-      } else {
-        viewState.showNews(filteredNews, query)
-      }
+  private fun showNews(news: List<News>) {
+    val filteredNews = if (query.isNullOrBlank()) {
+      news
+    } else {
+      news.filter { it.text.contains(query as CharSequence, true) }
+    }
+    if (filteredNews.isEmpty()) {
+      viewState.showEmpty()
+    } else {
+      viewState.showNews(filteredNews, query)
     }
   }
 }

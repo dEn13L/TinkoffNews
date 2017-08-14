@@ -17,6 +17,10 @@ class NewsInteractor constructor(
     return newsRepository.refreshNews()
   }
 
+  fun queryNews(query: String?): Single<List<News>> {
+    return newsRepository.queryNews(query)
+  }
+
   fun clearNews() {
     newsRepository.clearNews()
   }

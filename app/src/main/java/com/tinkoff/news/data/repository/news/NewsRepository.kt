@@ -52,6 +52,10 @@ class NewsRepository @Inject constructor(
         .doOnSuccess { news = it }
   }
 
+  override fun queryNews(query: String?): Single<List<News>> {
+    return queryLocalNews(query)
+  }
+
   override fun clearNews() {
     news = null
   }
@@ -68,6 +72,23 @@ class NewsRepository @Inject constructor(
         .doOnSuccess { Timber.d("Got db news $it") }
   }
 
+  private fun queryLocalNews(query: String?): Single<List<News>> {
+    val queryLowerCase = query?.toLowerCase()
+    val news = DbNews.TEXT.lower()
+    val condition = news.like("%$queryLowerCase%")
+
+    return store
+        .select(IDbNews::class)
+        .where(condition)
+        .orderBy(DbNews.PUBLICATION_DATE.desc())
+        .get()
+        .observable()
+        .map { newsMapper.map(it) }
+        .toList()
+        .doOnSubscribe { Timber.d("Query db news (query: $query)") }
+        .doOnSuccess { Timber.d("Got queried db news $it") }
+  }
+
   private fun getCloudNews(): Single<List<News>> {
     return api.getNews()
         .map { gson.fromJson(it, ApiNewsResponse::class.java) }
@@ -82,7 +103,7 @@ class NewsRepository @Inject constructor(
     return store
         .upsert(dbNews)
         .toCompletable()
-        .doOnSubscribe { Timber.d("Save news ($news) into DB") }
+        .doOnSubscribe { Timber.d("Save news $news into DB") }
         .doOnComplete { Timber.d("News saved") }
   }
 }

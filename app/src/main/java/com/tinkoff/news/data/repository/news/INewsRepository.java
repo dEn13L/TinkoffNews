@@ -11,5 +11,7 @@ public interface INewsRepository {
 
   Single<List<News>> refreshNews();
 
+  Single<List<News>> queryNews(String query);
+
   void clearNews();
 }

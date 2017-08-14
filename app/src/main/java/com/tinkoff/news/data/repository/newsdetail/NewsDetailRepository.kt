@@ -58,7 +58,7 @@ class NewsDetailRepository @Inject constructor(
     return store
         .upsert(dbNewsDetail)
         .toCompletable()
-        .doOnSubscribe { Timber.d("Save news detail ($newsDetail) into DB") }
+        .doOnSubscribe { Timber.d("Save news detail $newsDetail into DB") }
         .doOnComplete { Timber.d("News detail saved") }
   }
 }

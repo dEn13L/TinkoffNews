@@ -5,6 +5,7 @@ import com.arellomobile.mvp.MvpView
 import com.tinkoff.news.di.PresenterInjector
 import io.reactivex.FlowableTransformer
 import io.reactivex.MaybeTransformer
+import io.reactivex.SingleTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -28,6 +29,12 @@ open class BasePresenter<V : MvpView> : MvpPresenter<V>(), PresenterInjector {
   }
 
   fun <T> setMaybeSchedulers(): MaybeTransformer<T, T> = MaybeTransformer {
+    it
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+  }
+
+  fun <T> setSingleSchedulers(): SingleTransformer<T, T> = SingleTransformer {
     it
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
