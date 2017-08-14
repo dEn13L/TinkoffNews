@@ -1,16 +1,15 @@
 package com.tinkoff.news.ui.base.adapter
 
 import android.support.v4.util.SparseArrayCompat
-import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 
 abstract class BaseAdapter(
     var items: List<ViewType>? = null
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), QueryProvider {
 
   var delegateAdapters = SparseArrayCompat<ViewTypeDelegateAdapter>()
-
+  private var filterQuery: String? = null
 
   override fun getItemCount(): Int {
     return items?.size ?: 0
@@ -28,10 +27,13 @@ abstract class BaseAdapter(
     return items!![position].getViewType()
   }
 
-  fun showItems(items: List<ViewType>) {
-    val oldItems = this.items ?: listOf()
-    val result = DiffUtil.calculateDiff(ViewTypesDiffCallback(oldItems, items))
-    result.dispatchUpdatesTo(this)
+  override fun getQuery(): String? {
+    return filterQuery
+  }
+
+  fun showItems(items: List<ViewType>, query: String? = null) {
+    this.filterQuery = query
     this.items = items
+    notifyDataSetChanged()
   }
 }

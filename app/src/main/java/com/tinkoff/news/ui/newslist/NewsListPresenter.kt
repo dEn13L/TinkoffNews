@@ -31,7 +31,7 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
 
     fun showEmpty()
 
-    fun showNews(news: List<News>)
+    fun showNews(news: List<News>, query: String?)
 
     fun showContent()
   }
@@ -57,6 +57,7 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
   @Inject lateinit var newsInteractor: NewsInteractor
   private var news: List<News>? = null
   private var loadingState = false
+  private var query: String? = null
 
   init {
     TinkoffNewsApplication.appComponent
@@ -71,6 +72,12 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
     } else {
       loadNews()
     }
+  }
+
+  fun filter(query: String?) {
+    Timber.i("filter $query")
+    this.query = query
+    showNews(news)
   }
 
   private fun refreshNews() {
@@ -104,29 +111,32 @@ class NewsListPresenter : BasePresenter<NewsListPresenter.View>() {
             viewState.showLoading()
           }
           .doFinally { loadingState = false }
-          .doOnCancel { showResult() }
+          .doOnCancel { viewState.showContent() }
           .subscribe({ news ->
             showNews(news)
           }, {
             Timber.e(it, "Load news error")
             viewState.showError()
           }, {
-            showResult()
+            viewState.showContent()
           })
       addDisposable(d)
     }
   }
 
-  private fun showNews(news: List<News>) {
+  private fun showNews(news: List<News>?) {
     this.news = news
-    viewState.showNews(news)
-  }
-
-  private fun showResult() {
-    if (news?.isNotEmpty() ?: false) {
-      viewState.showContent()
-    } else {
-      viewState.showEmpty()
+    news?.let {
+      val filteredNews = if (query.isNullOrBlank()) {
+        news
+      } else {
+        news.filter { it.text.contains(query as CharSequence, true) }
+      }
+      if (filteredNews.isEmpty()) {
+        viewState.showEmpty()
+      } else {
+        viewState.showNews(filteredNews, query)
+      }
     }
   }
 }

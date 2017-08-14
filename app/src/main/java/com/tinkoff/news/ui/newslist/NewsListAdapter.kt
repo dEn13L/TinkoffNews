@@ -9,6 +9,6 @@ class NewsListAdapter(
 ) : BaseAdapter() {
 
   init {
-    delegateAdapters.put(AdapterConstants.NEWS, NewsDelegateAdapter(newsListener))
+    delegateAdapters.put(AdapterConstants.NEWS, NewsDelegateAdapter(this, newsListener))
   }
 }

@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @InjectViewState
 class NewsDetailsPresenter(
-    val startingPosition: Int
+    val newsId: Long
 ) : BasePresenter<NewsDetailsPresenter.View>() {
 
   @StateStrategyType(AddToEndSingleStrategy::class)
@@ -31,7 +31,7 @@ class NewsDetailsPresenter(
 
     fun showNews(news: List<News>, startingPosition: Int)
 
-    fun showNews(newsId: Long, title: String, position: Int)
+    fun showNews(newsId: Long, title: String)
 
     fun showContent()
   }
@@ -55,12 +55,10 @@ class NewsDetailsPresenter(
   }
 
   @Inject lateinit var newsInteractor: NewsInteractor
-  private var currentPosition = 0
   private var news: List<News>? = null
   private var currentNews: News? = null
 
   init {
-    currentPosition = startingPosition
     TinkoffNewsApplication.appComponent
         .newsDetailsPresenterBuilder()
         .build()
@@ -69,7 +67,7 @@ class NewsDetailsPresenter(
 
   fun enterTwoPaneMode() {
     currentNews?.let {
-      viewState.showNews(it.newsId, it.text, currentPosition)
+      viewState.showNews(it.newsId, it.text)
     }
   }
 
@@ -78,6 +76,7 @@ class NewsDetailsPresenter(
         .compose(setFlowableSchedulers())
         .subscribe({ news ->
           this.news = news
+          val startingPosition = news.indexOfFirst { it.newsId == newsId }
           pageChanged(startingPosition)
           viewState.showNews(news, startingPosition)
         }, {
@@ -90,7 +89,6 @@ class NewsDetailsPresenter(
   }
 
   fun pageChanged(position: Int) {
-    currentPosition = position
     currentNews = news?.get(position)
   }
 }

@@ -11,6 +11,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.tinkoff.news.R
 import com.tinkoff.news.data.News
 import com.tinkoff.news.ui.base.OnRefreshListener
+import com.tinkoff.news.ui.base.OnSearchListener
 import com.tinkoff.news.ui.base.OnToolbarClickListener
 import com.tinkoff.news.ui.base.adapter.deletages.NewsDelegateAdapter
 import com.tinkoff.news.ui.base.view.BaseFragment
@@ -23,7 +24,8 @@ import org.jetbrains.anko.textResource
 class NewsListFragment : BaseFragment(), NewsListPresenter.View,
     NewsDelegateAdapter.Listener,
     OnRefreshListener,
-    OnToolbarClickListener {
+    OnToolbarClickListener,
+    OnSearchListener {
 
   @InjectPresenter lateinit var presenter: NewsListPresenter
   private val adapter = NewsListAdapter(this)
@@ -53,40 +55,50 @@ class NewsListFragment : BaseFragment(), NewsListPresenter.View,
     newsRecyclerView.scrollToPosition(0)
   }
 
+  /** @see OnSearchListener */
+
+  override fun onSearch(query: String?) {
+    presenter.filter(query)
+  }
+
   /** MVP methods */
 
   override fun showLoading() {
     swipeRefreshLayout.isRefreshing = true
+    newsRecyclerView.gone()
     messageTextView.gone()
   }
 
   override fun showError() {
     swipeRefreshLayout.isRefreshing = false
+    newsRecyclerView.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_error
   }
 
   override fun showEmpty() {
     swipeRefreshLayout.isRefreshing = false
+    newsRecyclerView.gone()
     messageTextView.visible()
     messageTextView.textResource = R.string.news_empty
   }
 
-  override fun showNews(news: List<News>) {
-    adapter.showItems(news)
+  override fun showNews(news: List<News>, query: String?) {
+    adapter.showItems(news, query)
+    newsRecyclerView.visible()
+    messageTextView.gone()
   }
 
   override fun showContent() {
     swipeRefreshLayout.isRefreshing = false
-    messageTextView.gone()
   }
 
   /** Adapter items methods */
 
-  override fun onNewsSelected(newsId: Long, title: String?, position: Int) {
+  override fun onNewsSelected(newsId: Long, title: String?) {
     activity?.let { activity ->
       if (activity is NewsDelegateAdapter.Listener) {
-        activity.onNewsSelected(newsId, title, position)
+        activity.onNewsSelected(newsId, title)
       }
     }
   }

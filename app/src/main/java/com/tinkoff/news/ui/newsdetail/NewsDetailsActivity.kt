@@ -23,11 +23,11 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
 
   companion object {
 
-    val EXTRA_NEWS_POSITION = getSimpleName() + "." + "newsPosition"
+    val EXTRA_NEWS_ID = getSimpleName() + "." + "newsId"
 
-    fun start(context: Context, position: Int) {
+    fun start(context: Context, newsId: Long) {
       val intent = context.intentFor<NewsDetailsActivity>(
-          EXTRA_NEWS_POSITION to position
+          EXTRA_NEWS_ID to newsId
       )
 
       context.startActivity(intent)
@@ -38,8 +38,8 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
 
   @ProvidePresenter
   fun providePresenter(): NewsDetailsPresenter {
-    val startingPosition = intent?.getIntExtra(EXTRA_NEWS_POSITION, 0) ?: 0
-    return NewsDetailsPresenter(startingPosition)
+    val newsId = intent?.getLongExtra(EXTRA_NEWS_ID, 0) ?: 0
+    return NewsDetailsPresenter(newsId)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,8 +79,8 @@ class NewsDetailsActivity : BaseActivity(), NewsDetailsPresenter.View {
     }
   }
 
-  override fun showNews(newsId: Long, title: String, position: Int) {
-    NewsListActivity.start(this, newsId, title, position)
+  override fun showNews(newsId: Long, title: String) {
+    NewsListActivity.start(this, newsId, title)
     finish()
   }
 
