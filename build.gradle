@@ -63,6 +63,7 @@ ext {
   // Network
   retrofitVersion = '2.3.0'
   loggingInterceptorVersion = '3.8.1'
+  glideVersion = '3.8.0'
 
   // Architecture
   moxyVersion = '1.5.3'

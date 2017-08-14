@@ -84,10 +84,8 @@ public class NewsDetailFragment extends BaseFragment implements NewsDetailPresen
   }
 
   @Override public void showNewsDetail(String title, String content) {
-    CharSequence htmlTitle = title != null ? ExtensionsKt.fromHtml(title) : null;
-    CharSequence htmlContent = content != null ? ExtensionsKt.fromHtml(content) : null;
-    titleTextView.setText(htmlTitle);
-    contentTextView.setText(htmlContent);
+    ExtensionsKt.loadHtml(titleTextView, title);
+    ExtensionsKt.loadHtml(contentTextView, content);
     contentTextView.setMovementMethod(LinkMovementMethod.getInstance());
   }
 
